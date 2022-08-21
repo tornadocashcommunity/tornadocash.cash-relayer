@@ -1,0 +1,89 @@
+version: '2'
+
+services:
+  kovan:
+    image: tornadocash/relayer
+    restart: always
+    environment:
+      VIRTUAL_HOST: example.duckdns.org
+      LETSENCRYPT_HOST: example.duckdns.org
+      NET_ID: 42
+      RPC_URL: https://kovan.infura.io
+      # ORACLE_RPC_URL should always point to the mainnet
+      ORACLE_RPC_URL: https://mainnet.infura.io
+      # without 0x prefix
+      PRIVATE_KEY:
+      # 2.5 means 2.5%
+      RELAYER_FEE: 2.5
+      REDIS_URL: redis://redis/0
+      nginx_proxy_read_timeout: 600
+    depends_on:
+      - redis
+
+  mainnet:
+    image: tornadocash/relayer
+    restart: always
+    environment:
+      VIRTUAL_HOST: example2.duckdns.org
+      LETSENCRYPT_HOST: example2.duckdns.org
+      NET_ID: 1
+      RPC_URL: https://mainnet.infura.io
+      # ORACLE_RPC_URL should always point to the mainnet
+      ORACLE_RPC_URL: https://mainnet.infura.io
+      # without 0x prefix
+      PRIVATE_KEY:
+      # 2.5 means 2.5%
+      RELAYER_FEE: 2.5
+      REDIS_URL: redis://redis/1
+      nginx_proxy_read_timeout: 600
+    depends_on:
+      - redis
+
+  redis:
+    image: redis
+    restart: always
+    command: [redis-server, --appendonly, 'yes']
+    volumes:
+      - redis:/data
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - conf:/etc/nginx/conf.d
+      - vhost:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - certs:/etc/nginx/certs
+    logging:
+      driver: none
+
+  dockergen:
+    image: poma/docker-gen
+    container_name: dockergen
+    restart: always
+    command: -notify-sighup nginx -watch /etc/docker-gen/templates/nginx.tmpl /etc/nginx/conf.d/default.conf
+    volumes_from:
+      - nginx
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    container_name: letsencrypt
+    restart: always
+    environment:
+      NGINX_DOCKER_GEN_CONTAINER: dockergen
+    volumes_from:
+      - nginx
+      - dockergen
+
+volumes:
+  conf:
+  vhost:
+  html:
+  certs:
+  redis:
