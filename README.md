@@ -1,74 +1,91 @@
 # Relayer for Tornado Cash [![Build Status](https://github.com/tornadocash/relayer/workflows/build/badge.svg)](https://github.com/tornadocash/relayer/actions) [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/tornadocash/relayer?logo=docker&logoColor=%23FFFFFF&sort=semver)](https://hub.docker.com/repository/docker/tornadocash/relayer)
 
-__*Tornado.cash was sanctioned by the US Treasury on 08/08/2022, this makes it illegal for US citizens to interact with Tornado.cash and all of it's mainnet contracts. Please understand the laws where you live and take all necessary steps to protect and anonomize yourself.__
+__*Tornado Cash was sanctioned by the US Treasury on 08/08/2022, this makes it illegal for US citizens to interact with Tornado Cash and all of it's associated deloyed smart contracts. Please understand the laws where you live and take all necessary steps to protect and anonomize yourself.__
 
-__*It is recommended to run your Relayer on a VPS ([Virtual Private Server](https://njal.la/)). It is also possible to run it locally with a capable computer running linux.__
-
-__*When connecting to a server you will need to use ssh. You can find information about ssh keygen and management [here](https://www.ssh.com/academy/ssh/keygen).__
+__*It is recommended to run your Relayer on a VPS instnace ([Virtual Private Server](https://njal.la/)). Ensure SSH configuration is enabled for security, you can find information about SSH keygen and management [here](https://www.ssh.com/academy/ssh/keygen).__
 
 ## Deploy with docker-compose (recommended)
 
-*Ubuntu 22.10 was used in this seutp.*
-
-*docker-compose.yml contains a stack that will automatically provision SSL certificates for your domain.*
+*The following instructions are for Ubuntu 22.10, other operating systems may vary. These instructions include automated SSL configuration with LetsEncrypt.*
 
 __PREREQUISITES__
-1. Install docker-compose
-  - Run `sudo curl -L https://github.com/docker/compose/releases/download/2.15.1/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose` with the correct [current](https://github.com/docker/compose/releases) version number after `download/`.
-  - Run `sudo chmod +x /usr/local/bin/docker-compose` to set your permissions.
-2. Install Docker
-  - Run `curl -fsSL https://get.docker.com -o get-docker.sh` to download Docker.
-  - Run `sh get-docker.sh` to install Docker.
-3. Install Git
-  - Fist run `sudo apt-get update` to make sure everything is up to date.
-  - Now run `sudo apt-get install git-all` to install Git.
-4. Install Nginx
-  - Run `sudo apt update` to make sure everything is up to date.
-  - Now run `sudo apt install nginx` to install nginx
+1. Update core dependencies 
+  - `sudo apt-get update` to make sure everything is up to date
+2. Install docker-compose
+  - `curl -SL https://github.com/docker/compose/releases/download/v2.16.0/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose`
+  - Set read and write permissions for the executable `sudo chmod +x /usr/local/bin/docker-compose` 
+3. Install Docker
+  - `curl -fsSL https://get.docker.com -o get-docker.sh` 
+  - Set read and write permissions for the executable `chmod +x get-docker.sh` 
+  - Execute the install script `./get-docker.sh`
+4. Install git
+  - `sudo apt-get install git-all` 
+5. Install nginx
+  - `sudo apt install nginx` 
 
-__SETUP RELAYER__
-1. Download `docker-compose.yml`, `tornado.conf`, `.env.example`, and `tornado-stream.conf`
-2. Change environment variables for `mainnet` containers in `docker-compose.yml` as needed.
-  - Add `PRIVATE_KEY` for your relayer address (remove the 0x from your private key)
-  - Set `VIRTUAL_HOST` and `LETSENCRYPT_HOST` to your domain name and add a DNS record pointing to your relayer ip address
-  - Set `RELAYER_FEE` to what you would like to charge as your fee (remember .3% is paid to the DAO)
-  - Set `RPC_URL` and `ORACLE_RPC_URL` to a non-censoring RPC (You can [run your own](https://github.com/feshchenkod/rpc-nodes), or use a [free option](https://chainnodes.org/))
-  - update `REDIS_URL` if needed
+__FIREWALL CONFIGURATION__ 
 
-__SETUP NGINX REVERSE PROXY__
-1. Open your terminal, navigate to the directory containing `docker-compose.yml` and run `docker-compose up -d`
-2. Let `docker-compose up -d` run and and wait for the certbot certificates for your domain (this should take 1-2 minutes)
-3. Make sure UFW is installed by running `apt update` and `apt install ufw` 
-4. Allow SSH in the first position in UFW by running `ufw insert 1 allow ssh`
-5. Allow HTTP, and HTTPS by running `ufw allow https/tcp/http`
-6. Create the file `/etc/nginx/conf.d/tornado.conf` with the `tornado.conf` file as the contents
-7. Edit your `/etc/ngninx/nginx.conf` and append the file with the following:
-  - ` stream {  map_hash_bucket_size 128;  map_hash_max_size 128;  include /etc/nginx/conf.d/streams/*.conf;  }`
-  - Some of the contents of stream might already be there. The most important part is `include /etc/nginx/conf.d/streams/*.conf;`
-8. Create `/etc/nginx/conf.d/streams/tornado-stream.conf`with the `tornado-stream.conf` file as the contents
-9. Run `sudo service nginx restart`
+_* Warning: Failure to configure SSH as the first UFW rule, will lock you out of the instance_ 
 
-__Deploy on side chains__
-1. Download `docker-compose.yml`,  `.env.example` Edit the names of these files as needed.
-2. Change environment variables for containers in `docker-compose.yml` as needed.
-- Change `mainnet` to match the name of the chain you are deploying on.
-- Set the `NET_ID` to the chain ID of the chain you are deploying to. (e.g. goerli = 5)
-- Add `PRIVATE_KEY` for your relayer address (remove the 0x from your private key)
-- Set `VIRTUAL_HOST` and `LETSENCRYPT_HOST` to your domain name and add a DNS record pointing to your relayer ip address
-- Set `RELAYER_FEE` to what you would like to charge as your fee (remember .3% is paid to the DAO)
-- Set `RPC_URL` to a non-censoring RPC (You can [run your own](https://github.com/feshchenkod/rpc-nodes), or use a [free option](https://chainnodes.org/))
-- You will need to set the `ORACLE_RPC_URL` to a mainnet RPC.
-- update `REDIS_URL` if needed
+1. Make sure UFW is installed by running `apt update` and `apt install ufw` 
+2. Allow SSH in the first position in UFW by running `ufw insert 1 allow ssh`*
+3. Allow HTTP, and HTTPS by running `ufw allow https/tcp/http`
+4. Finalise changes and enable firewall `ufw enable`
 
-## Run as a Docker container
+__NETWORK DEPLOYMENT OPTIONS__ 
 
-1. `cp .env.example .env`
-2. Modify `.env` as needed
-3. `docker run -d --env-file .env -p 80:8000 tornadocash/relayer`
+_Ethereum (eth), Binance (bnb), Gnosis (xdai), Polygon (matic), Optimisim (op), Arbitrum (arb) and Goerli (geth)_
 
-In that case you will need to add https termination yourself because browsers with default settings will prevent https
-tornado.cash UI from submitting your request over http connection
+__BASIC DEPLOYMENT__
+1. Clone the repository and enter the directory 
+  - `git clone https://development.tornadocash.community/tornadocash/classic-relayer && cd classic-relayer`
+2. Clone the example enviroment file `.env.example`
+  - By default each network is preconfigured the naming of `.env.<NETWORK SYMBOL>`
+  - `cp .env.example .env.eth` 
+2. Change environment variables in the cloned file to match the perferred network configuration
+  - Set `PRIVATE_KEY` for your relayer address (remove the 0x from your private key)
+  - Set `VIRTUAL_HOST` and `LETSENCRYPT_HOST` to your domain address
+    - add a A  record DNS record with the value assigned to your instance IP address to configure the domain
+  - Set `RELAYER_FEE` to what you would like to charge as your fee (remember 0.3% is deducted from your staked relayer balance)
+  - Set `RPC_URL` to a non-censoring RPC endpoint
+    - You can [run your own](https://github.com/feshchenkod/rpc-nodes), or use a [free option](https://chainnodes.org/)
+  - Set `ORACLE_RPC_URL` to an Ethereum native RPC endpoint
+3. Build and deploy the docker source by specifying the network through `--profile <NETWORK_SYMBOL>`
+  - `docker-compose --profile eth up -d`
+4. Visit your domain address and check the `/status` endpoint and ensure there is no errors in the `status` field
 
+__NGINX REVERSE PROXY__
+1. Copy the pre-modified nginx policy as your default policy 
+  - `cp tornado.conf /etc/nginx/sites-available/default` 
+2. Append the default nginx configuraiton to include streams
+  - `echo "stream {  map_hash_bucket_size 128;  map_hash_max_size 128;  include /etc/nginx/conf.d/streams/*.conf; }" >> /etc/nginx/nginx.conf`
+3. Create the stream configruation
+  - `mkdir /etc/nginx/conf.d/streams && cp tornado-stream.conf /etc/nginx/conf.d/streams/tornado-stream.conf`
+4. Start nginx to make sure the configuration is correct 
+  - `sudo service nginx restart`
+5. Stop nginx
+  - `sudo service nginx stop`
+
+__MULTIPLE NETWORK DEPLOYMENT__
+1. Setup the instructions stated to setup an nginx reverse proxy
+2. Clone the example enviroment file `.env.example` for the networks of choice
+  - By default each network is preconfigured the naming of `.env.<NETWORK SYMBOL>`
+  - `cp .env.example .env.eth` 
+  - `cp .env.example .env.bnb`
+  - `cp .env.example .env.arb`
+  - `cp .env.example .env.op`
+  - `cp .env.example .env.xdai`
+  - Add `PRIVATE_KEY` for your relayer address (remove the 0x from your private key) to each enviroment file
+    - *It is recommended not to reuse the same private keys for each network as a security measure*
+  - Set `VIRTUAL_HOST` and `LETSENCRYPT_HOST` to uniquely allocated submdomains for each enviroment file
+    - add a A wildcard record DNS record with the value assigned to your instance IP address to configure submdomains
+    - eg: `mainnet.example.com` for Ethereum, `binance.example.com` for Binance etc
+  - Set `RELAYER_FEE` to what you would like to charge as your fee (remember 0.3% is deducted from your staked relayer balance)
+  - Set `RPC_URL` to a non-censoring RPC (You can [run your own](https://github.com/feshchenkod/rpc-nodes), or use a [free option](https://chainnodes.org/))
+  - Set `ORACLE_RPC_URL` to an Ethereum native RPC endpoint
+3. Build and deploy the docker source for the configured neworks specified via `--profile <NETWORK_SYMBOL>`
+  - `docker-compose --profile eth --profile bnb --profile arb --profile --profile op -profile xdai up -d`
+4. Visit your domain addresses and check each `/status` endpoint to ensure there is no errors in the `status` fields
 
 ## Run locally
 
