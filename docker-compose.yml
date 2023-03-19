@@ -47,8 +47,9 @@ services:
   # ---------------------- ETH ----------------------- #
 
   eth-server:
+    build: .
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'eth' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: server
     # env_file: .env.eth
@@ -56,63 +57,51 @@ services:
       NET_ID: 1
       REDIS_URL: redis://redis/0
       nginx_proxy_read_timeout: 600
-    depends_on: [redis]
+    depends_on: [ redis ]
 
   eth-treeWatcher:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'eth' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: treeWatcher
     # env_file: .env.eth
     environment:
       NET_ID: 1
       REDIS_URL: redis://redis/0
-    depends_on: [redis]
+    depends_on: [ redis, eth-server ]
 
   eth-priceWatcher:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'eth' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: priceWatcher
     # env_file: .env.eth
     environment:
       NET_ID: 1
       REDIS_URL: redis://redis/0
-      nginx_proxy_read_timeout: 600
-    depends_on: [redis]
-
-  eth-treeWatcher:
-    profiles: [ 'eth' ]
-    image: tornadocash/relayer:mining
-    restart: always
-    command: treeWatcher
-    # env_file: .env.eth
-    environment:
-      NET_ID: 1
-      REDIS_URL: redis://redis/0
-    depends_on: [redis]
+    depends_on: [ redis, eth-server ]
 
   eth-healthWatcher:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'eth' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: healthWatcher
     # env_file: .env.eth
     environment:
       NET_ID: 1
       REDIS_URL: redis://redis/0
-    depends_on: [redis]
+    depends_on: [ redis, eth-server ]
 
   eth-worker1:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'eth' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: worker
     # env_file: .env.eth
     environment:
       NET_ID: 1
       REDIS_URL: redis://redis/0
-    depends_on: [redis]
+    depends_on: [ redis, eth-server ]
 
   #  worker2:
   #    image: tornadocash/relayer:mining
@@ -176,8 +165,9 @@ services:
   # ---------------------- BNB ----------------------- #
 
   bnb-server:
+    build: .
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'bnb' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: server
     # env_file: .env.bnb
@@ -185,59 +175,60 @@ services:
       NET_ID: 56
       REDIS_URL: redis://redis/1
       nginx_proxy_read_timeout: 600
-    depends_on: [redis]
+    depends_on: [ redis ]
 
   bnb-treeWatcher:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'bnb' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: treeWatcher
     # env_file: .env.bnb
     environment:
       NET_ID: 56
       REDIS_URL: redis://redis/1
-    depends_on: [redis]
+    depends_on: [ redis, bnb-server ]
 
   bnb-priceWatcher:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'bnb' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: priceWatcher
     # env_file: .env.bnb
     environment:
       NET_ID: 56
       REDIS_URL: redis://redis/1
-    depends_on: [redis]
+    depends_on: [ redis, bnb-server ]
 
   bnb-healthWatcher:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'bnb' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: healthWatcher
     # env_file: .env.bnb
     environment:
       NET_ID: 56
       REDIS_URL: redis://redis/1
-    depends_on: [redis]
+    depends_on: [ redis, bnb-server ]
 
   bnb-worker1:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'bnb' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: worker
     # env_file: .env.bnb
     environment:
       NET_ID: 56
       REDIS_URL: redis://redis/1
-    depends_on: [redis]
+    depends_on: [ redis, bnb-server ]
 
   # -------------------------------------------------- #
 
   # ---------------------- MATIC --------------------- #
 
   matic-server:
+    build: .
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'matic' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: server
     # env_file: .env.matic
@@ -245,59 +236,60 @@ services:
       NET_ID: 137
       REDIS_URL: redis://redis/2
       nginx_proxy_read_timeout: 600
-    depends_on: [redis]
+    depends_on: [ redis ]
 
   matic-treeWatcher:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'matic' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: treeWatcher
     # env_file: .env.matic
     environment:
       NET_ID: 137
       REDIS_URL: redis://redis/2
-    depends_on: [redis]
+    depends_on: [ redis, matic-server ]
 
   matic-priceWatcher:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'matic' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: priceWatcher
     # env_file: .env.matic
     environment:
       NET_ID: 137
       REDIS_URL: redis://redis/2
-    depends_on: [redis]
-
+    depends_on: [ redis, matic-server ]
+ 
   matic-healthWatcher:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'matic' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: healthWatcher
     # env_file: .env.matic
     environment:
       NET_ID: 137
       REDIS_URL: redis://redis/2
-    depends_on: [redis]
+    depends_on: [ redis, matic-server ]
 
   matic-worker1:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'matic' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: worker
     # env_file: .env.matic
     environment:
       NET_ID: 137
       REDIS_URL: redis://redis/2
-    depends_on: [redis]
+    depends_on: [ redis, matic-server ]
 
   # -------------------------------------------------- #
 
   # ---------------------- XDAI ---------------------- #
 
   xdai-server:
+    build: .
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'xdai' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: server
    #  env_file: .env.xdai
@@ -305,59 +297,60 @@ services:
       NET_ID: 100
       REDIS_URL: redis://redis/3
       nginx_proxy_read_timeout: 600
-    depends_on: [redis]
+    depends_on: [ redis ]
 
   xdai-treeWatcher:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'xdai' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: treeWatcher
     # env_file: .env.xdai
     environment:
       NET_ID: 100
       REDIS_URL: redis://redis/3
-    depends_on: [redis]
+    depends_on: [ redis, xdai-server ]
 
   xdai-priceWatcher:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'xdai' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: priceWatcher
     # env_file: .env.xdai
     environment:
       NET_ID: 100
       REDIS_URL: redis://redis/3
-    depends_on: [redis]
+    depends_on: [ redis, xdai-server ]
 
   xdai-healthWatcher:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'xdai' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: healthWatcher
     # env_file: .env.xdai
     environment:
       NET_ID: 100
       REDIS_URL: redis://redis/3
-    depends_on: [redis]
+    depends_on: [ redis, xdai-server ]
 
   xdai-worker1:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'xdai' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: worker
     # env_file: .env.xdai
     environment:
       NET_ID: 100
       REDIS_URL: redis://redis/3
-    depends_on: [redis]
+    depends_on: [ redis, xdai-server ]
 
   # -------------------------------------------------- #
 
   # ---------------------- AVAX ---------------------- #
 
   avax-server:
+    build: .
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'avax' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: server
     # env_file: .env.avax
@@ -365,59 +358,60 @@ services:
       NET_ID: 43114
       REDIS_URL: redis://redis/4
       nginx_proxy_read_timeout: 600
-    depends_on: [redis]
+    depends_on: [ redis ]
 
   avax-treeWatcher:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'avax' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: treeWatcher
     # env_file: .env.avax
     environment:
       NET_ID: 43114
       REDIS_URL: redis://redis/4
-    depends_on: [redis]
+    depends_on: [ redis, avax-server ]
 
   avax-priceWatcher:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'avax' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: priceWatcher
     # env_file: .env.avax
     environment:
       NET_ID: 43114
       REDIS_URL: redis://redis/4
-    depends_on: [redis]
+    depends_on: [ redis, avax-server ]
 
   avax-healthWatcher:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'avax' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: healthWatcher
     # env_file: .env.avax
     environment:
       NET_ID: 43114
       REDIS_URL: redis://redis/4
-    depends_on: [redis]
+    depends_on: [ redis, avax-server ]
 
   avax-worker1:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'avax' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: worker
     # env_file: .env.avax
     environment:
       NET_ID: 43114
       REDIS_URL: redis://redis/4
-    depends_on: [redis]
+    depends_on: [ redis, avax-server ]
 
   # -------------------------------------------------- #
 
   # ---------------------- OP ------------------------ #
 
   op-server:
+    build: .
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'op' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: server
     # env_file: .env.op
@@ -425,20 +419,21 @@ services:
       NET_ID: 10
       REDIS_URL: redis://redis/5
       nginx_proxy_read_timeout: 600
-    depends_on: [redis]
+    depends_on: [ redis ]
 
   op-treeWatcher:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'op' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: treeWatcher
     # env_file: .env.op
     environment:
       NET_ID: 10
       REDIS_URL: redis://redis/5
-    depends_on: [redis]
+    depends_on: [ redis, op-server ]
 
   op-priceWatcher:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'op' ]
     image: tornadocash/relayer:mining
     restart: always
@@ -447,9 +442,10 @@ services:
     environment:
       NET_ID: 10
       REDIS_URL: redis://redis/5
-    depends_on: [redis]
+    depends_on: [ redis, op-server ]
 
   op-healthWatcher:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'op' ]
     image: tornadocash/relayer:mining
     restart: always
@@ -458,9 +454,10 @@ services:
     environment:
       NET_ID: 10
       REDIS_URL: redis://redis/5
-    depends_on: [redis]
+    depends_on: [ redis, op-server ]
 
   op-worker1:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'op' ]
     image: tornadocash/relayer:mining
     restart: always
@@ -469,15 +466,16 @@ services:
     environment:
       NET_ID: 10
       REDIS_URL: redis://redis/5
-    depends_on: [redis]
+    depends_on: [ redis, op-server ]
 
   # -------------------------------------------------- #
 
   # ---------------------- ARB ----------------------- #
 
   arb-server:
+    build: .
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'arb' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: server
     # env_file: .env.arb
@@ -485,59 +483,60 @@ services:
       NET_ID: 42161
       REDIS_URL: redis://redis/6
       nginx_proxy_read_timeout: 600
-    depends_on: [redis]
+    depends_on: [ redis ]
 
   arb-treeWatcher:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'arb' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: treeWatcher
     # env_file: .env.arb
     environment:
       NET_ID: 42161
       REDIS_URL: redis://redis/6
-    depends_on: [redis]
+    depends_on: [ redis, arb-server ]
 
   arb-priceWatcher:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'arb' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: priceWatcher
     # env_file: .env.arb
     environment:
       NET_ID: 42161
       REDIS_URL: redis://redis/6
-    depends_on: [redis]
+    depends_on: [ redis, arb-server ]
 
   arb-healthWatcher:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'arb' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: healthWatcher
     # env_file: .env.arb
     environment:
       NET_ID: 42161
       REDIS_URL: redis://redis/6
-    depends_on: [redis]
+    depends_on: [ redis, arb-server ]
 
   arb-worker1:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'arb' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: worker
     # env_file: .env.arb
     environment:
       NET_ID: 42161
       REDIS_URL: redis://redis/6
-    depends_on: [redis]
+    depends_on: [ redis, arb-server ]
 
   # -------------------------------------------------- #
 
   # ---------------------- GETH ---------------------- #
 
   geth-server:
+    build: .
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'geth' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: server
     # env_file: .env.geth
@@ -545,51 +544,51 @@ services:
       NET_ID: 5
       REDIS_URL: redis://redis/7
       nginx_proxy_read_timeout: 600
-    depends_on: [redis]
+    depends_on: [ redis ]
 
   geth-treeWatcher:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'geth' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: treeWatcher
     # env_file: .env.geth
     environment:
       NET_ID: 5
       REDIS_URL: redis://redis/7
-    depends_on: [redis]
+    depends_on: [ redis, geth-server ]
 
   geth-priceWatcher:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'geth' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: priceWatcher
     # env_file: .env.geth
     environment:
       NET_ID: 5
       REDIS_URL: redis://redis/7
-    depends_on: [redis]
+    depends_on: [ redis, geth-server ]
 
   geth-healthWatcher:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'geth' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: healthWatcher
     # env_file: .env.geth
     environment:
       NET_ID: 5
       REDIS_URL: redis://redis/7
-    depends_on: [redis]
+    depends_on: [ redis, geth-server ]
 
   geth-worker1:
+    image: local/tornadocash/relayer/4.14
     profiles: [ 'geth' ]
-    image: tornadocash/relayer:mining
     restart: always
     command: worker
     # env_file: .env.geth
     environment:
       NET_ID: 5
       REDIS_URL: redis://redis/7
-    depends_on: [redis]
+    depends_on: [ redis, geth-server ]
 
   # -------------------------------------------------- #
 
