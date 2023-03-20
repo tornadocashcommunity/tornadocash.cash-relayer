@@ -10,18 +10,17 @@ __*It is recommended to run your Relayer on a VPS instnace ([Virtual Private Ser
 
 __PREREQUISITES__
 1. Update core dependencies 
-  - `sudo apt-get update` to make sure everything is up to date
+  - `sudo apt-get update` 
 2. Install docker-compose
-  - `curl -SL https://github.com/docker/compose/releases/download/v2.16.0/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose`
-  - Set read and write permissions for the executable `sudo chmod +x /usr/local/bin/docker-compose` 
+  - `curl -SL https://github.com/docker/compose/releases/download/v2.16.0/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose`
 3. Install Docker
-  - `curl -fsSL https://get.docker.com -o get-docker.sh` 
-  - Set read and write permissions for the executable `chmod +x get-docker.sh` 
-  - Execute the install script `./get-docker.sh`
+  - `curl -fsSL https://get.docker.com -o get-docker.sh && chmod +x get-docker.sh && ./get-docker.sh` 
 4. Install git
   - `sudo apt-get install git-all` 
 5. Install nginx
   - `sudo apt install nginx` 
+6. Stop apache2 instance (enabled by default)
+  - `sudo systemctl stop apache2`
 
 __FIREWALL CONFIGURATION__ 
 
@@ -36,23 +35,22 @@ __NETWORK DEPLOYMENT OPTIONS__
 
 _Ethereum (eth), Binance (bnb), Gnosis (xdai), Polygon (matic), Optimisim (op), Arbitrum (arb) and Goerli (geth)_
 
-__BASIC DEPLOYMENT__
+__SINGLE NETWORK DEPLOYMENT__
 1. Clone the repository and enter the directory 
   - `git clone https://development.tornadocash.community/tornadocash/classic-relayer && cd classic-relayer`
-2. Clone the example enviroment file `.env.example`
+2. Clone the example enviroment file `.env.example` to configure for the perferred network 
   - By default each network is preconfigured the naming of `.env.<NETWORK SYMBOL>`
   - `cp .env.example .env.eth` 
-2. Change environment variables in the cloned file to match the perferred network configuration
   - Set `PRIVATE_KEY` for your relayer address (remove the 0x from your private key)
   - Set `VIRTUAL_HOST` and `LETSENCRYPT_HOST` to your domain address
     - add a A  record DNS record with the value assigned to your instance IP address to configure the domain
   - Set `RELAYER_FEE` to what you would like to charge as your fee (remember 0.3% is deducted from your staked relayer balance)
-  - Set `RPC_URL` to a non-censoring RPC endpoint
-    - You can [run your own](https://github.com/feshchenkod/rpc-nodes), or use a [free option](https://chainnodes.org/)
+  - Set `RPC_URL` to a non-censoring RPC endpoint (You can [run your own](https://github.com/feshchenkod/rpc-nodes), or use a [free option](https://chainnodes.org/))
   - Set `ORACLE_RPC_URL` to an Ethereum native RPC endpoint
-3. Build and deploy the docker source by specifying the network through `--profile <NETWORK_SYMBOL>`
+4. Uncomment the `env_file` lines (remove `# `) for the associated network services in `docker-compose.yml`
+5. Build and deploy the docker source by specifying the network through `--profile <NETWORK_SYMBOL>`
   - `docker-compose --profile eth up -d`
-4. Visit your domain address and check the `/status` endpoint and ensure there is no errors in the `status` field
+5. Visit your domain address and check the `/status` endpoint and ensure there is no errors in the `status` field
 
 __NGINX REVERSE PROXY__
 1. Copy the pre-modified nginx policy as your default policy 
@@ -62,30 +60,33 @@ __NGINX REVERSE PROXY__
 3. Create the stream configruation
   - `mkdir /etc/nginx/conf.d/streams && cp tornado-stream.conf /etc/nginx/conf.d/streams/tornado-stream.conf`
 4. Start nginx to make sure the configuration is correct 
-  - `sudo service nginx restart`
+  - `sudo systemctl restart nginx`
 5. Stop nginx
-  - `sudo service nginx stop`
+  - `sudo systemctl stop nginx`
 
 __MULTIPLE NETWORK DEPLOYMENT__
 1. Setup the instructions stated to setup an nginx reverse proxy
-2. Clone the example enviroment file `.env.example` for the networks of choice
+2. Clone the example enviroment file `.env.example` for the networks of choice and configure
   - By default each network is preconfigured the naming of `.env.<NETWORK SYMBOL>`
   - `cp .env.example .env.eth` 
   - `cp .env.example .env.bnb`
   - `cp .env.example .env.arb`
   - `cp .env.example .env.op`
   - `cp .env.example .env.xdai`
-  - Add `PRIVATE_KEY` for your relayer address (remove the 0x from your private key) to each enviroment file
+  - Set `PRIVATE_KEY` to your relayer address (remove the 0x from your private key) to each environment file
     - *It is recommended not to reuse the same private keys for each network as a security measure*
-  - Set `VIRTUAL_HOST` and `LETSENCRYPT_HOST` to uniquely allocated submdomains for each enviroment file
-    - add a A wildcard record DNS record with the value assigned to your instance IP address to configure submdomains
+  - Set `VIRTUAL_HOST` and `LETSENCRYPT_HOST` a unique subndomain for every network to each environment file
     - eg: `mainnet.example.com` for Ethereum, `binance.example.com` for Binance etc
+    - ensure that the parent domain domain is specified first with the subdomain after sperated by a comma for SAN certificates
+      - eg: `VIRTUAL_HOST=example.com,eth.example.com` and `LETSENCRYPT_HOST=example.com,eth.example.com` 
+    - add a A wildcard record DNS record with the value assigned to your instance IP address to configure submdomains
   - Set `RELAYER_FEE` to what you would like to charge as your fee (remember 0.3% is deducted from your staked relayer balance)
   - Set `RPC_URL` to a non-censoring RPC (You can [run your own](https://github.com/feshchenkod/rpc-nodes), or use a [free option](https://chainnodes.org/))
   - Set `ORACLE_RPC_URL` to an Ethereum native RPC endpoint
-3. Build and deploy the docker source for the configured neworks specified via `--profile <NETWORK_SYMBOL>`
-  - `docker-compose --profile eth --profile bnb --profile arb --profile --profile op -profile xdai up -d`
-4. Visit your domain addresses and check each `/status` endpoint to ensure there is no errors in the `status` fields
+3. Uncomment the `env_file` lines (remove `# `) for the associated network services in `docker-compose.yml`
+4. Build and deploy the docker source for the configured neworks specified via `--profile <NETWORK_SYMBOL>`
+  - `docker-compose --profile eth --profile bnb --profile arb --profile --profile op --profile xdai up -d`
+5. Visit your domain addresses and check each `/status` endpoint to ensure there is no errors in the `status` fields
 
 ## Run locally
 
