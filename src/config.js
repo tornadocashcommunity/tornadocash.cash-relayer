@@ -26,6 +26,6 @@ module.exports = {
     [jobType.MINING_REWARD]: 455000,
     [jobType.MINING_WITHDRAW]: 400000,
   },
-  minimumBalance: '1000000000000000000',
+  minimumBalance: '500000000000000000',
   baseFeeReserve: Number(process.env.BASE_FEE_RESERVE_PERCENTAGE),
 }
