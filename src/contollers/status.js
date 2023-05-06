@@ -25,7 +25,7 @@ async function status(req, res) {
 
 function index(req, res) {
   res.send(
-    'This is <a href=https://tornado.cash>tornado.cash</a> Relayer service. Check the <a href=/v1/status>/status</a> for settings',
+    'This is <a href=https://tornado.ws>Tornado Cash</a> Relayer service. Check the <a href=/v1/status>/status</a> for settings',
   )
 }
 
