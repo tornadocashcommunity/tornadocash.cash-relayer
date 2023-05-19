@@ -8,10 +8,13 @@ fi;
 relayer_soft_git_repo="https://git.tornado.ws/tornadocash/classic-relayer";
 
 user_home_dir=$(eval echo ~$USER);
+
 relayer_folder="$user_home_dir/tornado-relayer";
 relayer_mainnet_soft_source_folder="$relayer_folder/mainnet-soft-source";
 relayer_sidechains_soft_source_folder="$relayer_folder/sidechains-soft-source";
+
 script_log_file="/tmp/tornado-classic-relayer-installation.log"
+
 if [ -f $script_log_file ]; then rm $script_log_file; fi;
 
 function echo_log_err(){
@@ -28,12 +31,12 @@ function is_package_installed(){
   if [ $(dpkg-query -W -f='${Status}' $1 2>/dev/null | grep -c "ok installed") -eq 0 ]; then return 1; else return 0; fi;
 }
 
-function install_requred_packages(){
+function install_required_packages(){
   apt update &>> $script_log_file;
 
-  requred_packages=("curl" "git-all" "ufw" "nginx");
+  required_packages=("curl" "git-all" "ufw" "nginx");
   local package;
-  for package in ${requred_packages[@]}; do
+  for package in ${required_packages[@]}; do
     if ! is_package_installed $package; then
       # Kill apache process, because Debian configuring nginx package  right during installation
       if [ $package = "nginx" ]; then systemctl stop apache2; fi; 
@@ -95,7 +98,7 @@ function prepare_environments(){
 }
 
 function main(){
-  install_requred_packages;
+  install_required_packages;
   install_repositories;
   configure_firewall;
   configure_nginx_reverse_proxy;

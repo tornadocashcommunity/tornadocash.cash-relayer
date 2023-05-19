@@ -1,8 +1,8 @@
 # Relayer for Tornado Cash [![Build Status](https://github.com/tornadocash/relayer/workflows/build/badge.svg)](https://github.com/tornadocash/relayer/actions) [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/tornadocash/relayer?logo=docker&logoColor=%23FFFFFF&sort=semver)](https://hub.docker.com/repository/docker/tornadocash/relayer)
 
-__*Tornado Cash was sanctioned by the US Treasury on 08/08/2022, this makes it illegal for US citizens to interact with Tornado Cash and all of it's associated deloyed smart contracts. Please understand the laws where you live and take all necessary steps to protect and anonomize yourself.__
+__*Tornado Cash was sanctioned by the US Treasury on 08/08/2022, this makes it illegal for US citizens to interact with Tornado Cash and all of it's associated deployed smart contracts. Please understand the laws where you live and take all necessary steps to protect and anonomize yourself.__
 
-__*It is recommended to run your Relayer on a VPS instnace ([Virtual Private Server](https://njal.la/)). Ensure SSH configuration is enabled for security, you can find information about SSH keygen and management [here](https://www.ssh.com/academy/ssh/keygen).__
+__*It is recommended to run your Relayer on a VPS instance ([Virtual Private Server](https://njal.la/)). Ensure SSH configuration is enabled for security, you can find information about SSH keygen and management [here](https://www.ssh.com/academy/ssh/keygen).__
 
 ## Deploy with docker-compose (recommended)
 
@@ -38,7 +38,7 @@ _Ethereum (eth), Binance (bnb), Gnosis (xdai), Polygon (matic), Optimisim (op), 
 __SINGLE NETWORK DEPLOYMENT__
 1. Clone the repository and enter the directory 
   - `git clone https://development.tornadocash.community/tornadocash/classic-relayer && cd classic-relayer`
-2. Clone the example enviroment file `.env.example` to configure for the perferred network 
+2. Clone the example enviroment file `.env.example` to configure for the preferred network 
   - By default each network is preconfigured the naming of `.env.<NETWORK SYMBOL>`
   - `cp .env.example .env.eth` 
   - Set `PRIVATE_KEY` for your relayer address (remove the 0x from your private key)
@@ -55,9 +55,9 @@ __SINGLE NETWORK DEPLOYMENT__
 __NGINX REVERSE PROXY__
 1. Copy the pre-modified nginx policy as your default policy 
   - `cp tornado.conf /etc/nginx/sites-available/default` 
-2. Append the default nginx configuraiton to include streams
+2. Append the default nginx configuration to include streams
   - `echo "stream {  map_hash_bucket_size 128;  map_hash_max_size 128;  include /etc/nginx/conf.d/streams/*.conf; }" >> /etc/nginx/nginx.conf`
-3. Create the stream configruation
+3. Create the stream configuration
   - `mkdir /etc/nginx/conf.d/streams && cp tornado-stream.conf /etc/nginx/conf.d/streams/tornado-stream.conf`
 4. Start nginx to make sure the configuration is correct 
   - `sudo systemctl restart nginx`
@@ -84,7 +84,7 @@ __MULTIPLE NETWORK DEPLOYMENT__
   - Set `RPC_URL` to a non-censoring RPC (You can [run your own](https://github.com/feshchenkod/rpc-nodes), or use a [free option](https://chainnodes.org/))
   - Set `ORACLE_RPC_URL` to an Ethereum native RPC endpoint
 3. Uncomment the `env_file` lines (remove `# `) for the associated network services in `docker-compose.yml`
-4. Build and deploy the docker source for the configured neworks specified via `--profile <NETWORK_SYMBOL>`
+4. Build and deploy the docker source for the configured networks specified via `--profile <NETWORK_SYMBOL>`
   - `docker-compose --profile eth --profile bnb --profile arb --profile --profile op --profile xdai up -d`
 5. Visit your domain addresses and check each `/status` endpoint to ensure there is no errors in the `status` fields
 
