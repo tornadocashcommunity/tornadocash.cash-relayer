@@ -1,8 +1,9 @@
 .vscode
 node_modules/
 .env
-.env.mainnet
-.env.kovan
+.env.*
+!.env.*.example
+!.env.example
 kovan.*
 dump.rdb
 .idea
