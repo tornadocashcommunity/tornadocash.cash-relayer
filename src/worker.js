@@ -36,6 +36,9 @@ function start() {
       chainId: netId,
       defaultRpc: httpRpcUrl,
       defaultFallbackGasPrices: gasPrices,
+      minPriority: 0.05,
+      percentile: 5,
+      blocksCount: 20,
     }
 
     gasPriceOracle = new GasPriceOracle(gasPriceOracleConfig)
@@ -55,8 +58,12 @@ function start() {
   }
 }
 
-function getGasPrices() {
-  return gasPriceOracle.gasPrices()
+async function getGasPrice() {
+  const { maxFeePerGas, gasPrice } = await gasPriceOracle.getTxGasParams({
+    legacySpeed: 'fast',
+    bumpPercent: 10,
+  })
+  return maxFeePerGas || gasPrice
 }
 
 function getGasLimit() {
@@ -76,7 +83,7 @@ function getGasLimit() {
   return gasLimits[action]
 }
 
-async function getL1Fee({ data, gasPrice }) {
+async function fetchL1Fee({ data, gasPrice, gasLimit }) {
   const { address } = web3.eth.accounts.privateKeyToAccount(privateKey)
   const nonce = await web3.eth.getTransactionCount(address)
 
@@ -92,7 +99,7 @@ async function getL1Fee({ data, gasPrice }) {
     chainId: netId,
     value: data.args[5],
     to: tornadoProxyInstance._address,
-    gasLimit: getGasLimit(),
+    gasLimit: gasLimit,
     gasPrice: toHex(gasPrice),
   })
 
@@ -101,16 +108,24 @@ async function getL1Fee({ data, gasPrice }) {
   return l1Fee
 }
 
-async function checkTornadoFee({ data }) {
+async function estimateWithdrawalGasLimit(tx) {
+  try {
+    const fetchedGasLimit = await web3.eth.estimateGas(tx)
+    const bumped = Math.floor(fetchedGasLimit * 1.2)
+    return bumped
+  } catch (e) {
+    return getGasLimit()
+  }
+}
+
+async function checkTornadoFee({ data }, { gasPrice, gasLimit }) {
   const fee = toBN(data.args[4])
   const { amount, decimals } = getInstance(data.contract)
 
-  const { fast } = await getGasPrices()
-  const gasPrice = toWei(fast.toString(), 'gwei')
-
-  let expense = toBN(gasPrice).mul(toBN(getGasLimit()))
+  let expense = toBN(gasPrice).mul(toBN(gasLimit))
   if (netId === 10) {
-    const l1Fee = await getL1Fee({ data, gasPrice })
+    const l1Fee = await fetchL1Fee({ data, gasPrice, gasLimit })
+    console.log('l1 fee', l1Fee)
     expense = expense.add(toBN(l1Fee))
   }
 
@@ -133,15 +148,16 @@ async function checkTornadoFee({ data }) {
 async function getTxObject({ data }) {
   const calldata = tornadoProxyInstance.methods.withdraw(data.contract, data.proof, ...data.args).encodeABI()
 
-  const { fast } = await getGasPrices()
-
-  return {
+  const gasPrice = await getGasPrice()
+  const incompleteTx = {
     value: data.args[5],
     to: tornadoProxyInstance._address,
     data: calldata,
-    gasLimit: getGasLimit(),
-    gasPrice: toHex(toWei(fast.toString(), 'gwei')),
+    gasPrice,
   }
+  const gasLimit = await estimateWithdrawalGasLimit(incompleteTx)
+
+  return Object.assign(incompleteTx, { gasLimit })
 }
 
 async function processJob(job) {
@@ -161,7 +177,8 @@ async function processJob(job) {
 }
 
 async function submitTx(job) {
-  await checkTornadoFee(job)
+  const tx = await getTxObject(job)
+  await checkTornadoFee(job, tx)
   currentTx = await txManager.createTx(await getTxObject(job))
 
   try {
