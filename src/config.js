@@ -13,7 +13,7 @@ module.exports = {
   netId,
   redisUrl: process.env.REDIS_URL || 'redis://127.0.0.1:6379',
   httpRpcUrl: process.env.HTTP_RPC_URL,
-  oracleRpcUrl: process.env.ORACLE_RPC_URL || 'https://mainnet.infura.io/',
+  oracleRpcUrl: process.env.ORACLE_RPC_URL || 'https://rpc.payload.de',
   minerMerkleTreeHeight: 20,
   privateKey: process.env.PRIVATE_KEY,
   instances,
@@ -28,5 +28,5 @@ module.exports = {
   },
   proxyLight,
   nativeCurrency,
-  minimumBalance: '500000000000000000', // 0.5
+  minimumBalance: netId === 137 || netId === 43114 ? '10000000000000000000' : '100000000000000000', // 10 or 0.1
 }
