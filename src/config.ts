@@ -32,7 +32,17 @@ export const gasLimits = {
   [RelayerJobType.OP_TORNADO_WITHDRAW]: 440000,
   [RelayerJobType.ARB_TORNADO_WITHDRAW]: 1900000,
 };
-export const minimumBalance = '1000000000000000000';
+const minimumBalances: { [availableId in availableIds]: number } = {
+  1: 0.5, // 0.5 ETH on Ethereum mainnet
+  5: 10, // 10 ETH on Goerli testnet (because of high gas spikes)
+  10: 0.1, // 0.1 ETH on Optimism
+  56: 0.1, // 0.1 BNB on Binance Smart Chain
+  100: 100, // 100 XDAI on Gnosis (~ 100$)
+  137: 10, // 10 MATIC on Polygon
+  42161: 0.1, // 0.1 ETH on Arbitrum
+  43114: 10, // 10 AVAX on Avalanche C-Chain
+};
+export const minimumBalance = (minimumBalances[netId] * 1e18).toString();
 export const minimumTornBalance = '30000000000000000000';
 export const baseFeeReserve = Number(process.env.BASE_FEE_RESERVE_PERCENTAGE);
 export const tornToken = {
