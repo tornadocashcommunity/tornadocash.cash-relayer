@@ -43,7 +43,7 @@ const minimumBalances: { [availableId in availableIds]: number } = {
   43114: 10, // 10 AVAX on Avalanche C-Chain
 };
 export const minimumBalance = (minimumBalances[netId] * 1e18).toString();
-export const minimumTornBalance = '30000000000000000000';
+export const minimumTornBalance = (500 * 1e18).toString();
 export const baseFeeReserve = Number(process.env.BASE_FEE_RESERVE_PERCENTAGE);
 export const tornToken = {
   tokenAddress: '0x77777FeDdddFfC19Ff86DB637967013e6C6A116C',
