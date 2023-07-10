@@ -4,7 +4,7 @@ import { Provider } from '@ethersproject/providers';
 import { serialize } from '@ethersproject/transactions';
 import { formatEther, parseUnits } from 'ethers/lib/utils';
 import { BigNumber, BigNumberish, BytesLike } from 'ethers';
-import { ProxyLightABI, TornadoProxyABI } from '../contracts';
+import { ProxyLightAbi, TornadoProxyAbi } from '../contracts';
 import { BASE_FEE_RESERVE_PERCENTAGE, CONFIRMATIONS, gasLimits, MAX_GAS_PRICE, netId, tornadoServiceFee } from '../config';
 import { ChainIds, JobStatus, RelayerJobType } from '../types';
 import { PriceService } from './price.service';
@@ -38,7 +38,7 @@ export class TxService {
 
   gasLimit: number;
   txManager: TxManager;
-  tornadoProxy: TornadoProxyABI | ProxyLightABI;
+  tornadoProxy: TornadoProxyAbi | ProxyLightAbi;
   oracle: GasPriceOracle;
   provider: Provider;
   private _currentJob: Job;

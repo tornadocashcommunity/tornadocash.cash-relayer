@@ -12,123 +12,190 @@ import type {
   PopulatedTransaction,
   Signer,
   utils,
-} from 'ethers';
-import type { FunctionFragment, Result, EventFragment } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
-import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent, PromiseOrValue } from './common';
+} from "ethers";
+import type {
+  FunctionFragment,
+  Result,
+  EventFragment,
+} from "@ethersproject/abi";
+import type { Listener, Provider } from "@ethersproject/providers";
+import type {
+  TypedEventFilter,
+  TypedEvent,
+  TypedListener,
+  OnEvent,
+} from "./common";
 
-export interface OvmGasPriceOracleABIInterface extends utils.Interface {
+export interface OvmGasPriceOracleAbiInterface extends utils.Interface {
   functions: {
-    'decimals()': FunctionFragment;
-    'gasPrice()': FunctionFragment;
-    'getL1Fee(bytes)': FunctionFragment;
-    'getL1GasUsed(bytes)': FunctionFragment;
-    'l1BaseFee()': FunctionFragment;
-    'overhead()': FunctionFragment;
-    'owner()': FunctionFragment;
-    'renounceOwnership()': FunctionFragment;
-    'scalar()': FunctionFragment;
-    'setDecimals(uint256)': FunctionFragment;
-    'setGasPrice(uint256)': FunctionFragment;
-    'setL1BaseFee(uint256)': FunctionFragment;
-    'setOverhead(uint256)': FunctionFragment;
-    'setScalar(uint256)': FunctionFragment;
-    'transferOwnership(address)': FunctionFragment;
+    "decimals()": FunctionFragment;
+    "gasPrice()": FunctionFragment;
+    "getL1Fee(bytes)": FunctionFragment;
+    "getL1GasUsed(bytes)": FunctionFragment;
+    "l1BaseFee()": FunctionFragment;
+    "overhead()": FunctionFragment;
+    "owner()": FunctionFragment;
+    "renounceOwnership()": FunctionFragment;
+    "scalar()": FunctionFragment;
+    "setDecimals(uint256)": FunctionFragment;
+    "setGasPrice(uint256)": FunctionFragment;
+    "setL1BaseFee(uint256)": FunctionFragment;
+    "setOverhead(uint256)": FunctionFragment;
+    "setScalar(uint256)": FunctionFragment;
+    "transferOwnership(address)": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
-      | 'decimals'
-      | 'gasPrice'
-      | 'getL1Fee'
-      | 'getL1GasUsed'
-      | 'l1BaseFee'
-      | 'overhead'
-      | 'owner'
-      | 'renounceOwnership'
-      | 'scalar'
-      | 'setDecimals'
-      | 'setGasPrice'
-      | 'setL1BaseFee'
-      | 'setOverhead'
-      | 'setScalar'
-      | 'transferOwnership',
+      | "decimals"
+      | "gasPrice"
+      | "getL1Fee"
+      | "getL1GasUsed"
+      | "l1BaseFee"
+      | "overhead"
+      | "owner"
+      | "renounceOwnership"
+      | "scalar"
+      | "setDecimals"
+      | "setGasPrice"
+      | "setL1BaseFee"
+      | "setOverhead"
+      | "setScalar"
+      | "transferOwnership"
   ): FunctionFragment;
 
-  encodeFunctionData(functionFragment: 'decimals', values?: undefined): string;
-  encodeFunctionData(functionFragment: 'gasPrice', values?: undefined): string;
-  encodeFunctionData(functionFragment: 'getL1Fee', values: [PromiseOrValue<BytesLike>]): string;
-  encodeFunctionData(functionFragment: 'getL1GasUsed', values: [PromiseOrValue<BytesLike>]): string;
-  encodeFunctionData(functionFragment: 'l1BaseFee', values?: undefined): string;
-  encodeFunctionData(functionFragment: 'overhead', values?: undefined): string;
-  encodeFunctionData(functionFragment: 'owner', values?: undefined): string;
-  encodeFunctionData(functionFragment: 'renounceOwnership', values?: undefined): string;
-  encodeFunctionData(functionFragment: 'scalar', values?: undefined): string;
-  encodeFunctionData(functionFragment: 'setDecimals', values: [PromiseOrValue<BigNumberish>]): string;
-  encodeFunctionData(functionFragment: 'setGasPrice', values: [PromiseOrValue<BigNumberish>]): string;
-  encodeFunctionData(functionFragment: 'setL1BaseFee', values: [PromiseOrValue<BigNumberish>]): string;
-  encodeFunctionData(functionFragment: 'setOverhead', values: [PromiseOrValue<BigNumberish>]): string;
-  encodeFunctionData(functionFragment: 'setScalar', values: [PromiseOrValue<BigNumberish>]): string;
-  encodeFunctionData(functionFragment: 'transferOwnership', values: [PromiseOrValue<string>]): string;
+  encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
+  encodeFunctionData(functionFragment: "gasPrice", values?: undefined): string;
+  encodeFunctionData(functionFragment: "getL1Fee", values: [BytesLike]): string;
+  encodeFunctionData(
+    functionFragment: "getL1GasUsed",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(functionFragment: "l1BaseFee", values?: undefined): string;
+  encodeFunctionData(functionFragment: "overhead", values?: undefined): string;
+  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "renounceOwnership",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "scalar", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "setDecimals",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setGasPrice",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setL1BaseFee",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setOverhead",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setScalar",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "transferOwnership",
+    values: [string]
+  ): string;
 
-  decodeFunctionResult(functionFragment: 'decimals', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'gasPrice', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'getL1Fee', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'getL1GasUsed', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'l1BaseFee', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'overhead', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'owner', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'renounceOwnership', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'scalar', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'setDecimals', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'setGasPrice', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'setL1BaseFee', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'setOverhead', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'setScalar', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'transferOwnership', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "gasPrice", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getL1Fee", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getL1GasUsed",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "l1BaseFee", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "overhead", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "renounceOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "scalar", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setDecimals",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setGasPrice",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setL1BaseFee",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setOverhead",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "setScalar", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
 
   events: {
-    'DecimalsUpdated(uint256)': EventFragment;
-    'GasPriceUpdated(uint256)': EventFragment;
-    'L1BaseFeeUpdated(uint256)': EventFragment;
-    'OverheadUpdated(uint256)': EventFragment;
-    'OwnershipTransferred(address,address)': EventFragment;
-    'ScalarUpdated(uint256)': EventFragment;
+    "DecimalsUpdated(uint256)": EventFragment;
+    "GasPriceUpdated(uint256)": EventFragment;
+    "L1BaseFeeUpdated(uint256)": EventFragment;
+    "OverheadUpdated(uint256)": EventFragment;
+    "OwnershipTransferred(address,address)": EventFragment;
+    "ScalarUpdated(uint256)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: 'DecimalsUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'GasPriceUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'L1BaseFeeUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'OverheadUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'ScalarUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "DecimalsUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "GasPriceUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "L1BaseFeeUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OverheadUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ScalarUpdated"): EventFragment;
 }
 
 export interface DecimalsUpdatedEventObject {
   arg0: BigNumber;
 }
-export type DecimalsUpdatedEvent = TypedEvent<[BigNumber], DecimalsUpdatedEventObject>;
+export type DecimalsUpdatedEvent = TypedEvent<
+  [BigNumber],
+  DecimalsUpdatedEventObject
+>;
 
 export type DecimalsUpdatedEventFilter = TypedEventFilter<DecimalsUpdatedEvent>;
 
 export interface GasPriceUpdatedEventObject {
   arg0: BigNumber;
 }
-export type GasPriceUpdatedEvent = TypedEvent<[BigNumber], GasPriceUpdatedEventObject>;
+export type GasPriceUpdatedEvent = TypedEvent<
+  [BigNumber],
+  GasPriceUpdatedEventObject
+>;
 
 export type GasPriceUpdatedEventFilter = TypedEventFilter<GasPriceUpdatedEvent>;
 
 export interface L1BaseFeeUpdatedEventObject {
   arg0: BigNumber;
 }
-export type L1BaseFeeUpdatedEvent = TypedEvent<[BigNumber], L1BaseFeeUpdatedEventObject>;
+export type L1BaseFeeUpdatedEvent = TypedEvent<
+  [BigNumber],
+  L1BaseFeeUpdatedEventObject
+>;
 
-export type L1BaseFeeUpdatedEventFilter = TypedEventFilter<L1BaseFeeUpdatedEvent>;
+export type L1BaseFeeUpdatedEventFilter =
+  TypedEventFilter<L1BaseFeeUpdatedEvent>;
 
 export interface OverheadUpdatedEventObject {
   arg0: BigNumber;
 }
-export type OverheadUpdatedEvent = TypedEvent<[BigNumber], OverheadUpdatedEventObject>;
+export type OverheadUpdatedEvent = TypedEvent<
+  [BigNumber],
+  OverheadUpdatedEventObject
+>;
 
 export type OverheadUpdatedEventFilter = TypedEventFilter<OverheadUpdatedEvent>;
 
@@ -136,33 +203,44 @@ export interface OwnershipTransferredEventObject {
   previousOwner: string;
   newOwner: string;
 }
-export type OwnershipTransferredEvent = TypedEvent<[string, string], OwnershipTransferredEventObject>;
+export type OwnershipTransferredEvent = TypedEvent<
+  [string, string],
+  OwnershipTransferredEventObject
+>;
 
-export type OwnershipTransferredEventFilter = TypedEventFilter<OwnershipTransferredEvent>;
+export type OwnershipTransferredEventFilter =
+  TypedEventFilter<OwnershipTransferredEvent>;
 
 export interface ScalarUpdatedEventObject {
   arg0: BigNumber;
 }
-export type ScalarUpdatedEvent = TypedEvent<[BigNumber], ScalarUpdatedEventObject>;
+export type ScalarUpdatedEvent = TypedEvent<
+  [BigNumber],
+  ScalarUpdatedEventObject
+>;
 
 export type ScalarUpdatedEventFilter = TypedEventFilter<ScalarUpdatedEvent>;
 
-export interface OvmGasPriceOracleABI extends BaseContract {
+export interface OvmGasPriceOracleAbi extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: OvmGasPriceOracleABIInterface;
+  interface: OvmGasPriceOracleAbiInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
     fromBlockOrBlockhash?: string | number | undefined,
-    toBlock?: string | number | undefined,
+    toBlock?: string | number | undefined
   ): Promise<Array<TEvent>>;
 
-  listeners<TEvent extends TypedEvent>(eventFilter?: TypedEventFilter<TEvent>): Array<TypedListener<TEvent>>;
+  listeners<TEvent extends TypedEvent>(
+    eventFilter?: TypedEventFilter<TEvent>
+  ): Array<TypedListener<TEvent>>;
   listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(eventFilter: TypedEventFilter<TEvent>): this;
+  removeAllListeners<TEvent extends TypedEvent>(
+    eventFilter: TypedEventFilter<TEvent>
+  ): this;
   removeAllListeners(eventName?: string): this;
   off: OnEvent<this>;
   on: OnEvent<this>;
@@ -174,9 +252,12 @@ export interface OvmGasPriceOracleABI extends BaseContract {
 
     gasPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    getL1Fee(_data: PromiseOrValue<BytesLike>, overrides?: CallOverrides): Promise<[BigNumber]>;
+    getL1Fee(_data: BytesLike, overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    getL1GasUsed(_data: PromiseOrValue<BytesLike>, overrides?: CallOverrides): Promise<[BigNumber]>;
+    getL1GasUsed(
+      _data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     l1BaseFee(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -184,38 +265,40 @@ export interface OvmGasPriceOracleABI extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
-    renounceOwnership(overrides?: Overrides & { from?: PromiseOrValue<string> }): Promise<ContractTransaction>;
+    renounceOwnership(
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
 
     scalar(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     setDecimals(
-      _decimals: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> },
+      _decimals: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     setGasPrice(
-      _gasPrice: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> },
+      _gasPrice: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     setL1BaseFee(
-      _baseFee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> },
+      _baseFee: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     setOverhead(
-      _overhead: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> },
+      _overhead: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     setScalar(
-      _scalar: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> },
+      _scalar: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> },
+      newOwner: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
   };
 
@@ -223,9 +306,9 @@ export interface OvmGasPriceOracleABI extends BaseContract {
 
   gasPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
-  getL1Fee(_data: PromiseOrValue<BytesLike>, overrides?: CallOverrides): Promise<BigNumber>;
+  getL1Fee(_data: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
 
-  getL1GasUsed(_data: PromiseOrValue<BytesLike>, overrides?: CallOverrides): Promise<BigNumber>;
+  getL1GasUsed(_data: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
 
   l1BaseFee(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -233,38 +316,40 @@ export interface OvmGasPriceOracleABI extends BaseContract {
 
   owner(overrides?: CallOverrides): Promise<string>;
 
-  renounceOwnership(overrides?: Overrides & { from?: PromiseOrValue<string> }): Promise<ContractTransaction>;
+  renounceOwnership(
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
 
   scalar(overrides?: CallOverrides): Promise<BigNumber>;
 
   setDecimals(
-    _decimals: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> },
+    _decimals: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   setGasPrice(
-    _gasPrice: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> },
+    _gasPrice: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   setL1BaseFee(
-    _baseFee: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> },
+    _baseFee: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   setOverhead(
-    _overhead: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> },
+    _overhead: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   setScalar(
-    _scalar: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> },
+    _scalar: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   transferOwnership(
-    newOwner: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> },
+    newOwner: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   callStatic: {
@@ -272,9 +357,12 @@ export interface OvmGasPriceOracleABI extends BaseContract {
 
     gasPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getL1Fee(_data: PromiseOrValue<BytesLike>, overrides?: CallOverrides): Promise<BigNumber>;
+    getL1Fee(_data: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
 
-    getL1GasUsed(_data: PromiseOrValue<BytesLike>, overrides?: CallOverrides): Promise<BigNumber>;
+    getL1GasUsed(
+      _data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     l1BaseFee(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -286,42 +374,57 @@ export interface OvmGasPriceOracleABI extends BaseContract {
 
     scalar(overrides?: CallOverrides): Promise<BigNumber>;
 
-    setDecimals(_decimals: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<void>;
+    setDecimals(
+      _decimals: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    setGasPrice(_gasPrice: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<void>;
+    setGasPrice(
+      _gasPrice: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    setL1BaseFee(_baseFee: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<void>;
+    setL1BaseFee(
+      _baseFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    setOverhead(_overhead: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<void>;
+    setOverhead(
+      _overhead: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    setScalar(_scalar: PromiseOrValue<BigNumberish>, overrides?: CallOverrides): Promise<void>;
+    setScalar(_scalar: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
-    transferOwnership(newOwner: PromiseOrValue<string>, overrides?: CallOverrides): Promise<void>;
+    transferOwnership(
+      newOwner: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {
-    'DecimalsUpdated(uint256)'(arg0?: null): DecimalsUpdatedEventFilter;
+    "DecimalsUpdated(uint256)"(arg0?: null): DecimalsUpdatedEventFilter;
     DecimalsUpdated(arg0?: null): DecimalsUpdatedEventFilter;
 
-    'GasPriceUpdated(uint256)'(arg0?: null): GasPriceUpdatedEventFilter;
+    "GasPriceUpdated(uint256)"(arg0?: null): GasPriceUpdatedEventFilter;
     GasPriceUpdated(arg0?: null): GasPriceUpdatedEventFilter;
 
-    'L1BaseFeeUpdated(uint256)'(arg0?: null): L1BaseFeeUpdatedEventFilter;
+    "L1BaseFeeUpdated(uint256)"(arg0?: null): L1BaseFeeUpdatedEventFilter;
     L1BaseFeeUpdated(arg0?: null): L1BaseFeeUpdatedEventFilter;
 
-    'OverheadUpdated(uint256)'(arg0?: null): OverheadUpdatedEventFilter;
+    "OverheadUpdated(uint256)"(arg0?: null): OverheadUpdatedEventFilter;
     OverheadUpdated(arg0?: null): OverheadUpdatedEventFilter;
 
-    'OwnershipTransferred(address,address)'(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null,
+    "OwnershipTransferred(address,address)"(
+      previousOwner?: string | null,
+      newOwner?: string | null
     ): OwnershipTransferredEventFilter;
     OwnershipTransferred(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null,
+      previousOwner?: string | null,
+      newOwner?: string | null
     ): OwnershipTransferredEventFilter;
 
-    'ScalarUpdated(uint256)'(arg0?: null): ScalarUpdatedEventFilter;
+    "ScalarUpdated(uint256)"(arg0?: null): ScalarUpdatedEventFilter;
     ScalarUpdated(arg0?: null): ScalarUpdatedEventFilter;
   };
 
@@ -330,9 +433,12 @@ export interface OvmGasPriceOracleABI extends BaseContract {
 
     gasPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getL1Fee(_data: PromiseOrValue<BytesLike>, overrides?: CallOverrides): Promise<BigNumber>;
+    getL1Fee(_data: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
 
-    getL1GasUsed(_data: PromiseOrValue<BytesLike>, overrides?: CallOverrides): Promise<BigNumber>;
+    getL1GasUsed(
+      _data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     l1BaseFee(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -340,38 +446,40 @@ export interface OvmGasPriceOracleABI extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
-    renounceOwnership(overrides?: Overrides & { from?: PromiseOrValue<string> }): Promise<BigNumber>;
+    renounceOwnership(
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
 
     scalar(overrides?: CallOverrides): Promise<BigNumber>;
 
     setDecimals(
-      _decimals: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> },
+      _decimals: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     setGasPrice(
-      _gasPrice: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> },
+      _gasPrice: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     setL1BaseFee(
-      _baseFee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> },
+      _baseFee: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     setOverhead(
-      _overhead: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> },
+      _overhead: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     setScalar(
-      _scalar: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> },
+      _scalar: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> },
+      newOwner: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
   };
 
@@ -380,9 +488,15 @@ export interface OvmGasPriceOracleABI extends BaseContract {
 
     gasPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    getL1Fee(_data: PromiseOrValue<BytesLike>, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    getL1Fee(
+      _data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    getL1GasUsed(_data: PromiseOrValue<BytesLike>, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    getL1GasUsed(
+      _data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     l1BaseFee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -390,38 +504,40 @@ export interface OvmGasPriceOracleABI extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    renounceOwnership(overrides?: Overrides & { from?: PromiseOrValue<string> }): Promise<PopulatedTransaction>;
+    renounceOwnership(
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
 
     scalar(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     setDecimals(
-      _decimals: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> },
+      _decimals: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     setGasPrice(
-      _gasPrice: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> },
+      _gasPrice: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     setL1BaseFee(
-      _baseFee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> },
+      _baseFee: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     setOverhead(
-      _overhead: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> },
+      _overhead: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     setScalar(
-      _scalar: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> },
+      _scalar: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> },
+      newOwner: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
   };
 }

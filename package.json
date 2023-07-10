@@ -11,7 +11,8 @@
     "dev:server": "nodemon --watch './src/**/*.ts' --exec ts-node src/app/index.ts",
     "dev:healthWorker": "nodemon --watch './src/**/*.ts' --exec ts-node src/healthWorker.ts",
     "dev:txWorker": "nodemon --watch './src/**/*.ts' --exec ts-node src/txWorker.ts",
-    "build": "tsc",
+    "build": "yarn build:abi && tsc",
+    "build:abi": "yarn typechain --target ethers-v5  --out-dir src/contracts ./abis/*.abi.json",
     "test": "tap --node-arg=--require=ts-node/register --no-check-coverage",
     "eslint": "eslint --ext .ts --ignore-path .gitignore .",
     "prettier:check": "npx prettier --check . --config .prettierrc --ignore-path .gitignore",
@@ -43,7 +44,7 @@
     "uuid": "^8.3.0"
   },
   "devDependencies": {
-    "@typechain/ethers-v5": "^10.0.0",
+    "@typechain/ethers-v5": "^11.0.0",
     "@types/ioredis": "^4.28.10",
     "@types/node": "^20.4.1",
     "@types/tap": "^15.0.7",
@@ -59,7 +60,7 @@
     "prettier": "^2.7.1",
     "tap": "^16.3.0",
     "ts-node": "^10.7.0",
-    "typechain": "^8.0.0",
+    "typechain": "^8.2.0",
     "typescript": "^4.7.4"
   }
 }

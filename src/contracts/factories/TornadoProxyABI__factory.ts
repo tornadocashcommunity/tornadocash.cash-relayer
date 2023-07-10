@@ -2,188 +2,194 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
-import type { TornadoProxyABI, TornadoProxyABIInterface } from '../TornadoProxyABI';
+import { Contract, Signer, utils } from "ethers";
+import type { Provider } from "@ethersproject/providers";
+import type {
+  TornadoProxyAbi,
+  TornadoProxyAbiInterface,
+} from "../TornadoProxyAbi";
 
 const _abi = [
   {
     inputs: [
       {
-        internalType: 'bytes32',
-        name: '_tornadoTrees',
-        type: 'bytes32',
+        internalType: "bytes32",
+        name: "_tornadoTrees",
+        type: "bytes32",
       },
       {
-        internalType: 'bytes32',
-        name: '_governance',
-        type: 'bytes32',
+        internalType: "bytes32",
+        name: "_governance",
+        type: "bytes32",
       },
       {
-        internalType: 'contract ITornado[]',
-        name: '_instances',
-        type: 'address[]',
+        internalType: "contract ITornado[]",
+        name: "_instances",
+        type: "address[]",
       },
     ],
-    stateMutability: 'nonpayable',
-    type: 'constructor',
+    stateMutability: "nonpayable",
+    type: "constructor",
   },
   {
     inputs: [],
-    name: 'governance',
+    name: "governance",
     outputs: [
       {
-        internalType: 'address',
-        name: '',
-        type: 'address',
+        internalType: "address",
+        name: "",
+        type: "address",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [
       {
-        internalType: 'contract ITornado',
-        name: '',
-        type: 'address',
+        internalType: "contract ITornado",
+        name: "",
+        type: "address",
       },
     ],
-    name: 'instances',
+    name: "instances",
     outputs: [
       {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
+        internalType: "bool",
+        name: "",
+        type: "bool",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [
       {
-        internalType: 'bytes32',
-        name: 'node',
-        type: 'bytes32',
+        internalType: "bytes32",
+        name: "node",
+        type: "bytes32",
       },
     ],
-    name: 'resolve',
+    name: "resolve",
     outputs: [
       {
-        internalType: 'address',
-        name: '',
-        type: 'address',
+        internalType: "address",
+        name: "",
+        type: "address",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [],
-    name: 'tornadoTrees',
+    name: "tornadoTrees",
     outputs: [
       {
-        internalType: 'contract ITornadoTrees',
-        name: '',
-        type: 'address',
+        internalType: "contract ITornadoTrees",
+        name: "",
+        type: "address",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [
       {
-        internalType: 'contract ITornado',
-        name: 'tornado',
-        type: 'address',
+        internalType: "contract ITornado",
+        name: "tornado",
+        type: "address",
       },
       {
-        internalType: 'bytes32',
-        name: 'commitment',
-        type: 'bytes32',
+        internalType: "bytes32",
+        name: "commitment",
+        type: "bytes32",
       },
     ],
-    name: 'deposit',
+    name: "deposit",
     outputs: [],
-    stateMutability: 'payable',
-    type: 'function',
+    stateMutability: "payable",
+    type: "function",
   },
   {
     inputs: [
       {
-        internalType: 'contract ITornado',
-        name: 'instance',
-        type: 'address',
+        internalType: "contract ITornado",
+        name: "instance",
+        type: "address",
       },
       {
-        internalType: 'bool',
-        name: 'update',
-        type: 'bool',
+        internalType: "bool",
+        name: "update",
+        type: "bool",
       },
     ],
-    name: 'updateInstances',
+    name: "updateInstances",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [
       {
-        internalType: 'contract ITornado',
-        name: 'tornado',
-        type: 'address',
+        internalType: "contract ITornado",
+        name: "tornado",
+        type: "address",
       },
       {
-        internalType: 'bytes',
-        name: 'proof',
-        type: 'bytes',
+        internalType: "bytes",
+        name: "proof",
+        type: "bytes",
       },
       {
-        internalType: 'bytes32',
-        name: 'root',
-        type: 'bytes32',
+        internalType: "bytes32",
+        name: "root",
+        type: "bytes32",
       },
       {
-        internalType: 'bytes32',
-        name: 'nullifierHash',
-        type: 'bytes32',
+        internalType: "bytes32",
+        name: "nullifierHash",
+        type: "bytes32",
       },
       {
-        internalType: 'address payable',
-        name: 'recipient',
-        type: 'address',
+        internalType: "address payable",
+        name: "recipient",
+        type: "address",
       },
       {
-        internalType: 'address payable',
-        name: 'relayer',
-        type: 'address',
+        internalType: "address payable",
+        name: "relayer",
+        type: "address",
       },
       {
-        internalType: 'uint256',
-        name: 'fee',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "fee",
+        type: "uint256",
       },
       {
-        internalType: 'uint256',
-        name: 'refund',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "refund",
+        type: "uint256",
       },
     ],
-    name: 'withdraw',
+    name: "withdraw",
     outputs: [],
-    stateMutability: 'payable',
-    type: 'function',
+    stateMutability: "payable",
+    type: "function",
   },
-];
+] as const;
 
-export class TornadoProxyABI__factory {
+export class TornadoProxyAbi__factory {
   static readonly abi = _abi;
-  static createInterface(): TornadoProxyABIInterface {
-    return new utils.Interface(_abi) as TornadoProxyABIInterface;
+  static createInterface(): TornadoProxyAbiInterface {
+    return new utils.Interface(_abi) as TornadoProxyAbiInterface;
   }
-  static connect(address: string, signerOrProvider: Signer | Provider): TornadoProxyABI {
-    return new Contract(address, _abi, signerOrProvider) as TornadoProxyABI;
+  static connect(
+    address: string,
+    signerOrProvider: Signer | Provider
+  ): TornadoProxyAbi {
+    return new Contract(address, _abi, signerOrProvider) as TornadoProxyAbi;
   }
 }

@@ -2,315 +2,325 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
-import type { OvmGasPriceOracleABI, OvmGasPriceOracleABIInterface } from '../OvmGasPriceOracleABI';
+import { Contract, Signer, utils } from "ethers";
+import type { Provider } from "@ethersproject/providers";
+import type {
+  OvmGasPriceOracleAbi,
+  OvmGasPriceOracleAbiInterface,
+} from "../OvmGasPriceOracleAbi";
 
 const _abi = [
   {
     inputs: [
       {
-        internalType: 'address',
-        name: '_owner',
-        type: 'address',
+        internalType: "address",
+        name: "_owner",
+        type: "address",
       },
     ],
-    stateMutability: 'nonpayable',
-    type: 'constructor',
+    stateMutability: "nonpayable",
+    type: "constructor",
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: false,
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
-    name: 'DecimalsUpdated',
-    type: 'event',
+    name: "DecimalsUpdated",
+    type: "event",
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: false,
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
-    name: 'GasPriceUpdated',
-    type: 'event',
+    name: "GasPriceUpdated",
+    type: "event",
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: false,
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
-    name: 'L1BaseFeeUpdated',
-    type: 'event',
+    name: "L1BaseFeeUpdated",
+    type: "event",
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: false,
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
-    name: 'OverheadUpdated',
-    type: 'event',
+    name: "OverheadUpdated",
+    type: "event",
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: true,
-        internalType: 'address',
-        name: 'previousOwner',
-        type: 'address',
+        internalType: "address",
+        name: "previousOwner",
+        type: "address",
       },
       {
         indexed: true,
-        internalType: 'address',
-        name: 'newOwner',
-        type: 'address',
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
       },
     ],
-    name: 'OwnershipTransferred',
-    type: 'event',
+    name: "OwnershipTransferred",
+    type: "event",
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: false,
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
-    name: 'ScalarUpdated',
-    type: 'event',
+    name: "ScalarUpdated",
+    type: "event",
   },
   {
     inputs: [],
-    name: 'decimals',
+    name: "decimals",
     outputs: [
       {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [],
-    name: 'gasPrice',
+    name: "gasPrice",
     outputs: [
       {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [
       {
-        internalType: 'bytes',
-        name: '_data',
-        type: 'bytes',
+        internalType: "bytes",
+        name: "_data",
+        type: "bytes",
       },
     ],
-    name: 'getL1Fee',
+    name: "getL1Fee",
     outputs: [
       {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [
       {
-        internalType: 'bytes',
-        name: '_data',
-        type: 'bytes',
+        internalType: "bytes",
+        name: "_data",
+        type: "bytes",
       },
     ],
-    name: 'getL1GasUsed',
+    name: "getL1GasUsed",
     outputs: [
       {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [],
-    name: 'l1BaseFee',
+    name: "l1BaseFee",
     outputs: [
       {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [],
-    name: 'overhead',
+    name: "overhead",
     outputs: [
       {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [],
-    name: 'owner',
+    name: "owner",
     outputs: [
       {
-        internalType: 'address',
-        name: '',
-        type: 'address',
+        internalType: "address",
+        name: "",
+        type: "address",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [],
-    name: 'renounceOwnership',
+    name: "renounceOwnership",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [],
-    name: 'scalar',
+    name: "scalar",
     outputs: [
       {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_decimals',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "_decimals",
+        type: "uint256",
       },
     ],
-    name: 'setDecimals',
+    name: "setDecimals",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_gasPrice',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "_gasPrice",
+        type: "uint256",
       },
     ],
-    name: 'setGasPrice',
+    name: "setGasPrice",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_baseFee',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "_baseFee",
+        type: "uint256",
       },
     ],
-    name: 'setL1BaseFee',
+    name: "setL1BaseFee",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_overhead',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "_overhead",
+        type: "uint256",
       },
     ],
-    name: 'setOverhead',
+    name: "setOverhead",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_scalar',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "_scalar",
+        type: "uint256",
       },
     ],
-    name: 'setScalar',
+    name: "setScalar",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [
       {
-        internalType: 'address',
-        name: 'newOwner',
-        type: 'address',
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
       },
     ],
-    name: 'transferOwnership',
+    name: "transferOwnership",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
   },
-];
+] as const;
 
-export class OvmGasPriceOracleABI__factory {
+export class OvmGasPriceOracleAbi__factory {
   static readonly abi = _abi;
-  static createInterface(): OvmGasPriceOracleABIInterface {
-    return new utils.Interface(_abi) as OvmGasPriceOracleABIInterface;
+  static createInterface(): OvmGasPriceOracleAbiInterface {
+    return new utils.Interface(_abi) as OvmGasPriceOracleAbiInterface;
   }
-  static connect(address: string, signerOrProvider: Signer | Provider): OvmGasPriceOracleABI {
-    return new Contract(address, _abi, signerOrProvider) as OvmGasPriceOracleABI;
+  static connect(
+    address: string,
+    signerOrProvider: Signer | Provider
+  ): OvmGasPriceOracleAbi {
+    return new Contract(
+      address,
+      _abi,
+      signerOrProvider
+    ) as OvmGasPriceOracleAbi;
   }
 }

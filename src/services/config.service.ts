@@ -16,7 +16,7 @@ import {
 import { ChainIds, Token } from '../types';
 import { getProvider, getTornadoProxyContract, getTornadoProxyLightContract, getTornTokenContract } from '../modules/contracts';
 import { resolve } from '../modules';
-import { ERC20Abi, ProxyLightABI, TornadoProxyABI } from '../contracts';
+import { ERC20Abi, ProxyLightAbi, TornadoProxyAbi } from '../contracts';
 import { availableIds, netIds, NetInstances } from 'torn-token';
 import { getAddress } from 'ethers/lib/utils';
 import { BigNumber, providers, Wallet } from 'ethers';
@@ -32,7 +32,7 @@ export class ConfigService {
   queueName: relayerQueueName;
   tokens: Token[];
   private _proxyAddress: string;
-  private _proxyContract: TornadoProxyABI | ProxyLightABI;
+  private _proxyContract: TornadoProxyAbi | ProxyLightAbi;
   addressMap = new Map<string, InstanceProps>();
   isLightMode: boolean;
   instances: NetInstances;
@@ -77,7 +77,7 @@ export class ConfigService {
     this._fillInstanceMap();
   }
 
-  get proxyContract(): TornadoProxyABI | ProxyLightABI {
+  get proxyContract(): TornadoProxyAbi | ProxyLightAbi {
     return this._proxyContract;
   }
 
@@ -114,7 +114,7 @@ export class ConfigService {
       await this.checkNetwork();
       console.log('Initializing...');
       this._tokenAddress = await resolve(torn.torn.address);
-      this._tokenContract = await getTornTokenContract(this._tokenAddress);
+      this._tokenContract = getTornTokenContract(this._tokenAddress);
       if (this.isLightMode) {
         this._proxyAddress = torn.tornadoProxyLight.address;
         this._proxyContract = getTornadoProxyLightContract(this._proxyAddress);
