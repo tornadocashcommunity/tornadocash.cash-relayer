@@ -2,6 +2,7 @@ import { RelayerJobType } from './types';
 import tornConfig, { availableIds } from 'torn-token';
 import { config } from 'dotenv';
 import { version } from '../package.json';
+import { BigNumber } from 'ethers';
 
 config();
 const isProduction = process.env.NODE_ENV === 'production';
@@ -42,8 +43,11 @@ const minimumBalances: { [availableId in availableIds]: number } = {
   42161: 0.1, // 0.1 ETH on Arbitrum
   43114: 10, // 10 AVAX on Avalanche C-Chain
 };
-export const minimumBalance = (minimumBalances[netId] * 1e18).toString();
-export const minimumTornBalance = (500 * 1e18).toString();
+const decimals = BigNumber.from(10).pow(18);
+export const minimumBalance = BigNumber.from(minimumBalances[netId] * 10)
+  .mul(decimals.div(10))
+  .toString();
+export const minimumTornBalance = BigNumber.from(500).mul(decimals).toString();
 export const baseFeeReserve = Number(process.env.BASE_FEE_RESERVE_PERCENTAGE);
 export const tornToken = {
   tokenAddress: '0x77777FeDdddFfC19Ff86DB637967013e6C6A116C',
