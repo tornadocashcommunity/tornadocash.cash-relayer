@@ -7,5 +7,6 @@ export { MulticallAbi__factory } from "./MulticallAbi__factory";
 export { OffchainOracleAbi__factory } from "./OffchainOracleAbi__factory";
 export { OvmGasPriceOracleAbi__factory } from "./OvmGasPriceOracleAbi__factory";
 export { ProxyLightAbi__factory } from "./ProxyLightAbi__factory";
+export { RelayerRegistryAbi__factory } from "./RelayerRegistryAbi__factory";
 export { TornadoInstanceAbi__factory } from "./TornadoInstanceAbi__factory";
 export { TornadoProxyAbi__factory } from "./TornadoProxyAbi__factory";

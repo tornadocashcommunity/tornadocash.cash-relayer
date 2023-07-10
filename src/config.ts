@@ -44,7 +44,7 @@ const minimumBalances: { [availableId in availableIds]: number } = {
   43114: 10, // 10 AVAX on Avalanche C-Chain
 };
 const decimals = BigNumber.from(10).pow(18);
-export const minimumBalance = BigNumber.from(minimumBalances[netId] * 10)
+export const minimumBalance = BigNumber.from(minimumBalances[netId] * 10) // BN don't accept float values
   .mul(decimals.div(10))
   .toString();
 export const minimumTornBalance = BigNumber.from(500).mul(decimals).toString();

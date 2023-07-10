@@ -14,9 +14,15 @@ import {
   tornToken,
 } from '../config';
 import { ChainIds, Token } from '../types';
-import { getProvider, getTornadoProxyContract, getTornadoProxyLightContract, getTornTokenContract } from '../modules/contracts';
+import {
+  getProvider,
+  getRelayerRegistryContract,
+  getTornadoProxyContract,
+  getTornadoProxyLightContract,
+  getTornTokenContract,
+} from '../modules/contracts';
 import { resolve } from '../modules';
-import { ERC20Abi, ProxyLightAbi, TornadoProxyAbi } from '../contracts';
+import { ERC20Abi, ProxyLightAbi, RelayerRegistryAbi, TornadoProxyAbi } from '../contracts';
 import { availableIds, netIds, NetInstances } from 'torn-token';
 import { getAddress } from 'ethers/lib/utils';
 import { BigNumber, providers, Wallet } from 'ethers';
@@ -47,6 +53,8 @@ export class ConfigService {
   fallbackGasPrices: FallbackGasPrices;
   private _tokenAddress: string;
   private _tokenContract: ERC20Abi;
+  private _relayerRegistryAddress: string;
+  private _relayerRegistryContract: RelayerRegistryAbi;
   balances: {
     MAIN: { warn: string; critical: string };
     TORN: { warn: string; critical: string };
@@ -85,6 +93,10 @@ export class ConfigService {
     return this._tokenContract;
   }
 
+  get relayerRegistryContract(): RelayerRegistryAbi {
+    return this._relayerRegistryContract;
+  }
+
   private _fillInstanceMap() {
     if (!this.instances) throw new Error('config mismatch, check your environment variables');
     for (const [currency, { instanceAddress, symbol, decimals }] of Object.entries(this.instances)) {
@@ -113,8 +125,13 @@ export class ConfigService {
       if (this.isInit) return;
       await this.checkNetwork();
       console.log('Initializing...');
+
       this._tokenAddress = await resolve(torn.torn.address);
       this._tokenContract = getTornTokenContract(this._tokenAddress);
+
+      this._relayerRegistryAddress = await resolve(torn.relayerRegistry.address);
+      this._relayerRegistryContract = getRelayerRegistryContract(this._relayerRegistryAddress);
+
       if (this.isLightMode) {
         this._proxyAddress = torn.tornadoProxyLight.address;
         this._proxyContract = getTornadoProxyLightContract(this._proxyAddress);

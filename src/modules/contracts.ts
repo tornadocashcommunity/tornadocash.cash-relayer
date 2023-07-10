@@ -4,6 +4,7 @@ import {
   OffchainOracleAbi__factory,
   OvmGasPriceOracleAbi__factory,
   ProxyLightAbi__factory,
+  RelayerRegistryAbi__factory,
   TornadoProxyAbi__factory,
 } from '../contracts';
 import { providers } from 'ethers';
@@ -41,6 +42,11 @@ export const getMultiCallContract = () => {
 export const getTornTokenContract = (tokenAddress: string) => {
   return ERC20Abi__factory.connect(tokenAddress, getProvider(true, mainnetRpcUrl));
 };
+
 export const getOvmGasPriceOracle = () => {
   return OvmGasPriceOracleAbi__factory.connect(ovmGasPriceOracleContract, getProvider());
+};
+
+export const getRelayerRegistryContract = (relayerRegistryAddress: string) => {
+  return RelayerRegistryAbi__factory.connect(relayerRegistryAddress, getProvider(true, mainnetRpcUrl));
 };

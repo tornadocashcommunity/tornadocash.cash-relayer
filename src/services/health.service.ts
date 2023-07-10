@@ -142,7 +142,7 @@ export class HealthService {
   async check() {
     await this.config.checkNetwork();
     const mainBalance = await this.config.wallet.getBalance();
-    const tornBalance = await this.config.tokenContract.balanceOf(this.config.wallet.address);
+    const tornBalance = await this.config.relayerRegistryContract.getRelayerBalance(this.config.wallet.address);
     const mainStatus = await this._checkBalance(mainBalance, 'MAIN');
     const tornStatus = await this._checkBalance(tornBalance, 'TORN');
     if (mainStatus.level === 'CRITICAL') {
