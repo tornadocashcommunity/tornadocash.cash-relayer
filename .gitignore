@@ -1,8 +1,0 @@
-.vscode
-node_modules/
-.env
-.env.mainnet
-.env.kovan
-kovan.*
-dump.rdb
-.idea

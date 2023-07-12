@@ -48,8 +48,9 @@ function install_requred_packages(){
 }
 
 function install_repositories(){
-    git clone $relayer_soft_git_repo -b mainnet $relayer_mainnet_soft_source_folder;
-    git clone $relayer_soft_git_repo -b sidechain $relayer_sidechains_soft_source_folder;
+    git clone $relayer_soft_git_repo -b main-v4 $relayer_folder
+    git clone $relayer_soft_git_repo -b mainnet-v4 $relayer_mainnet_soft_source_folder;
+    git clone $relayer_soft_git_repo -b sidechain-v4 $relayer_sidechains_soft_source_folder;
 }
 
 function install_docker_utilities(){
@@ -59,9 +60,7 @@ function install_docker_utilities(){
   curl -SL https://github.com/docker/compose/releases/download/v2.16.0/docker-compose-$kernel_name-$processor_type -o /usr/local/bin/docker-compose;
   chmod +x /usr/local/bin/docker-compose;
 
-  curl -fsSL https://get.docker.com -o get-docker.sh;
-  chmod +x get-docker.sh;
-  ./get-docker.sh;
+  curl -s https://get.docker.com | bash;
 }
 
 function configure_firewall(){
@@ -92,7 +91,6 @@ function prepare_environments(){
     cp $relayer_mainnet_soft_source_folder/.env.example $relayer_folder/.env.eth;
     tee $relayer_folder/.env.bsc $relayer_folder/.env.arb $relayer_folder/.env.goerli $relayer_folder/.env.polygon $relayer_folder/.env.op \
         $relayer_folder/.env.avax $relayer_folder/.env.gnosis < $relayer_sidechains_soft_source_folder/.env.example > /dev/null;
-    cp $relayer_mainnet_soft_source_folder/docker-compose.yml $relayer_folder/docker-compose.yml;
 }
 
 function main(){
