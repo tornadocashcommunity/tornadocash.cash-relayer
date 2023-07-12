@@ -47,7 +47,7 @@ services:
 
   eth-server:
     build: .
-    image: tornadocash/relayer:mainnet
+    image: tornadocash/relayer:mainnet-v4
     restart: always
     command: server
     env_file: .env
@@ -58,7 +58,7 @@ services:
     depends_on: [redis]
 
   eth-treeWatcher:
-    image: tornadocash/relayer:mainnet
+    image: tornadocash/relayer:mainnet-v4
     restart: always
     command: treeWatcher
     env_file: .env
@@ -68,7 +68,7 @@ services:
     depends_on: [redis, eth-server]
 
   eth-priceWatcher:
-    image: tornadocash/relayer:mainnet
+    image: tornadocash/relayer:mainnet-v4
     restart: always
     command: priceWatcher
     env_file: .env
@@ -78,7 +78,7 @@ services:
     depends_on: [redis, eth-server]
 
   eth-healthWatcher:
-    image: tornadocash/relayer:mainnet
+    image: tornadocash/relayer:mainnet-v4
     restart: always
     command: healthWatcher
     env_file: .env
@@ -88,7 +88,7 @@ services:
     depends_on: [redis, eth-server]
 
   eth-worker1:
-    image: tornadocash/relayer:mainnet
+    image: tornadocash/relayer:mainnet-v4
     restart: always
     command: worker
     env_file: .env
@@ -98,7 +98,7 @@ services:
     depends_on: [redis, eth-server]
 
   #  worker2:
-  #    image: tornadocash/relayer:mining
+  #    image: tornadocash/relayer:mainnet-v4
   #    restart: always
   #    command: worker
   #    env_file: .env

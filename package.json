@@ -13,6 +13,7 @@
     "prettier:fix": "npx prettier --write . --config .prettierrc",
     "lint": "yarn eslint && yarn prettier:check",
     "test": "mocha",
+    "build": "docker build -t tornadocash/relayer:mainnet-v4 .",
     "start": "docker-compose up -d redis && concurrently \"yarn server\" \"yarn priceWatcher\" \"yarn treeWatcher\" \"yarn worker\" \"yarn healthWatcher\""
   },
   "author": "tornado.cash",

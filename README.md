@@ -43,8 +43,10 @@ __DEPLOYMENT__
   - Set `ORACLE_RPC_URL` to an Ethereum native RPC endpoint
 
 4. Uncomment the `env_file` lines (remove `# `) for the associated network services in `docker-compose.yml`
-5. Build and deploy the docker source by specifying the network through `--profile <NETWORK_SYMBOL>`
-  - `docker-compose --profile eth up -d`
+5. Build and deploy the docker source by specifying the network through:
+
+  - `npm run build`
+  - `docker-compose up -d`
 5. Visit your domain address and check the `/status` endpoint and ensure there is no errors in the `status` field
 
 __NGINX REVERSE PROXY__
