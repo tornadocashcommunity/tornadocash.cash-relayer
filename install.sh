@@ -89,7 +89,7 @@ function build_relayer_docker_containers(){
 }
 
 function prepare_environments(){
-    cp $relayer_mainnet_soft_source_folder/.env.mainnet.example $relayer_folder/.env.mainnet;
+    cp $relayer_mainnet_soft_source_folder/.env.example $relayer_folder/.env.eth;
     tee $relayer_folder/.env.bsc $relayer_folder/.env.arb $relayer_folder/.env.goerli $relayer_folder/.env.polygon $relayer_folder/.env.op \
         $relayer_folder/.env.avax $relayer_folder/.env.gnosis < $relayer_sidechains_soft_source_folder/.env.example > /dev/null;
     cp $relayer_mainnet_soft_source_folder/docker-compose.yml $relayer_folder/docker-compose.yml;
