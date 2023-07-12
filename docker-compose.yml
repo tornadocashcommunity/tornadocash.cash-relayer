@@ -2,7 +2,7 @@ version: '2'
 
 services:
   server:
-    image: tornadocash/relayer:light
+    image: tornadocash/relayer:sidechain-beta
     restart: always
     command: server
     env_file: .env
@@ -12,7 +12,7 @@ services:
     depends_on: [redis]
 
   healthWatcher:
-    image: tornadocash/relayer:light
+    image: tornadocash/relayer:sidechain-beta
     restart: always
     command: healthWatcher
     env_file: .env
@@ -21,7 +21,7 @@ services:
     depends_on: [redis]
 
   worker1:
-    image: tornadocash/relayer:light
+    image: tornadocash/relayer:sidechain-beta
     restart: always
     command: worker
     env_file: .env
