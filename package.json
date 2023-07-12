@@ -11,7 +11,7 @@
     "prettier:fix": "npx prettier --write . --config .prettierrc",
     "lint": "yarn eslint && yarn prettier:check",
     "test": "mocha",
-    "build": "docker build -t tornadocash/relayer:sidechain-beta",
+    "build": "docker build -t tornadocash/relayer:sidechain-beta .",
     "start": "concurrently \"yarn server\" \"yarn worker\" \"yarn healthWatcher\""
   },
   "author": "tornado.cash",

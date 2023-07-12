@@ -1,91 +1,6 @@
 version: '2'
 
 services:
-  server:
-    image: tornadocash/relayer:sidechain-beta
-    restart: always
-    command: server
-    env_file: .env
-    environment:
-      REDIS_URL: redis://redis/0
-      nginx_proxy_read_timeout: 600
-    depends_on: [redis]
-
-  healthWatcher:
-    image: tornadocash/relayer:sidechain-beta
-    restart: always
-    command: healthWatcher
-    env_file: .env
-    environment:
-      REDIS_URL: redis://redis/0
-    depends_on: [redis]
-
-  worker1:
-    image: tornadocash/relayer:sidechain-beta
-    restart: always
-    command: worker
-    env_file: .env
-    environment:
-      REDIS_URL: redis://redis/0
-    depends_on: [redis]
-
-  #  worker2:
-  #    image: tornadocash/relayer:light
-  #    restart: always
-  #    command: worker
-  #    env_file: .env
-  #    environment:
-  #      PRIVATE_KEY: qwe
-  #      REDIS_URL: redis://redis/0
-
-  #  # this container will proxy *.onion domain to the server container
-  #  # if you want to run *only* as .onion service, you don't need `nginx`, `letsencrypt`, `dockergen` containers
-  #  tor:
-  #    image: strm/tor
-  #    restart: always
-  #    depends_on: [server]
-  #    environment:
-  #      LISTEN_PORT: 80
-  #      REDIRECT: server:8000
-  #      # Generate a new key with
-  #      # docker run --rm --entrypoint shallot strm/tor-hiddenservice-nginx ^foo
-  #      PRIVATE_KEY: |
-  #        -----BEGIN RSA PRIVATE KEY-----
-  #        ...
-  #        -----END RSA PRIVATE KEY-----
-
-  #  # auto update docker containers when new image is pushed to docker hub (be careful with that)
-  #  watchtower:
-  #    image: v2tec/watchtower
-  #    restart: always
-  #    volumes:
-  #      - /var/run/docker.sock:/var/run/docker.sock
-
-  #  # this container will send Telegram notifications when other containers are stopped/restarted
-  #  # it's best to run this container on some other instance, otherwise it can't notify if the whole instance goes down
-  #  notifier:
-  #    image: poma/docker-telegram-notifier
-  #    restart: always
-  #    volumes:
-  #      - /var/run/docker.sock:/var/run/docker.sock:ro
-  #    environment:
-  #      # How to create bot: https://core.telegram.org/bots#3-how-do-i-create-a-bot
-  #      # How to get chat id: https://stackoverflow.com/questions/32423837/telegram-bot-how-to-get-a-group-chat-id/32572159#32572159
-  #      TELEGRAM_NOTIFIER_BOT_TOKEN: ...
-  #      TELEGRAM_NOTIFIER_CHAT_ID: ...
-
-  #  # this container will send Telegram notifications if specified address doesn't have enough funds
-  #  monitor_mainnet:
-  #    image: peppersec/monitor_eth
-  #    restart: always
-  #    environment:
-  #      TELEGRAM_NOTIFIER_BOT_TOKEN: ...
-  #      TELEGRAM_NOTIFIER_CHAT_ID: ...
-  #      ADDRESS: '0x0000000000000000000000000000000000000000'
-  #      THRESHOLD: 0.5 # ETH
-  #      RPC_URL: https://mainnet.infura.io
-  #      BLOCK_EXPLORER: etherscan.io
-
   redis:
     image: redis
     restart: always
@@ -127,6 +42,234 @@ services:
     volumes_from:
       - nginx
       - dockergen
+
+  # ---------------------- BSC (Binance Smart Chain) ----------------------- #
+
+  bsc-server:
+    image: tornadocash/relayer:sidechain-beta
+    profiles: ['bsc']
+    restart: always
+    command: server
+    env_file: .env.bsc
+    environment:
+      NET_ID: 56
+      REDIS_URL: redis://redis/1
+      nginx_proxy_read_timeout: 600
+    depends_on: [redis]
+
+  bsc-healthWatcher:
+    image: tornadocash/relayer:sidechain-beta
+    profiles: ['bsc']
+    restart: always
+    command: healthWatcher
+    env_file: .env.bsc
+    environment:
+      NET_ID: 56
+      REDIS_URL: redis://redis/1
+    depends_on: [redis, bsc-server]
+
+  bsc-worker1:
+    image: tornadocash/relayer:sidechain-beta
+    profiles: ['bsc']
+    restart: always
+    command: worker
+    env_file: .env.bsc
+    environment:
+      NET_ID: 56
+      REDIS_URL: redis://redis/1
+    depends_on: [redis, bsc-server]
+
+  # -------------------------------------------------- #
+
+  # ---------------------- Polygon (MATIC) --------------------- #
+
+  polygon-server:
+    image: tornadocash/relayer:sidechain-beta
+    profiles: ['polygon']
+    restart: always
+    command: server
+    env_file: .env.polygon
+    environment:
+      NET_ID: 137
+      REDIS_URL: redis://redis/2
+      nginx_proxy_read_timeout: 600
+    depends_on: [redis]
+
+  polygon-healthWatcher:
+    image: tornadocash/relayer:sidechain-beta
+    profiles: ['polygon']
+    restart: always
+    command: healthWatcher
+    env_file: .env.polygon
+    environment:
+      NET_ID: 137
+      REDIS_URL: redis://redis/2
+    depends_on: [redis, polygon-server]
+
+  polygon-worker1:
+    image: tornadocash/relayer:sidechain-beta
+    profiles: ['polygon']
+    restart: always
+    command: worker
+    env_file: .env.polygon
+    environment:
+      NET_ID: 137
+      REDIS_URL: redis://redis/2
+    depends_on: [redis, polygon-server]
+
+  # -------------------------------------------------- #
+
+  # ---------------------- Gnosis (XDAI) ---------------------- #
+
+  gnosis-server:
+    image: tornadocash/relayer:sidechain-beta
+    profiles: ['gnosis']
+    restart: always
+    command: server
+    env_file: .env.gnosis
+    environment:
+      NET_ID: 100
+      REDIS_URL: redis://redis/3
+      nginx_proxy_read_timeout: 600
+    depends_on: [redis]
+
+  gnosis-healthWatcher:
+    image: tornadocash/relayer:sidechain-beta
+    profiles: ['gnosis']
+    restart: always
+    command: healthWatcher
+    env_file: .env.gnosis
+    environment:
+      NET_ID: 100
+      REDIS_URL: redis://redis/3
+    depends_on: [redis, gnosis-server]
+
+  gnosis-worker1:
+    image: tornadocash/relayer:sidechain-beta
+    profiles: ['gnosis']
+    restart: always
+    command: worker
+    env_file: .env.gnosis
+    environment:
+      NET_ID: 100
+      REDIS_URL: redis://redis/3
+    depends_on: [redis, gnosis-server]
+
+  # -------------------------------------------------- #
+
+  # ---------------------- AVAX ---------------------- #
+
+  avax-server:
+    image: tornadocash/relayer:sidechain-beta
+    profiles: ['avax']
+    restart: always
+    command: server
+    env_file: .env.avax
+    environment:
+      NET_ID: 43114
+      REDIS_URL: redis://redis/4
+      nginx_proxy_read_timeout: 600
+    depends_on: [redis]
+
+  avax-healthWatcher:
+    image: tornadocash/relayer:sidechain-beta
+    profiles: ['avax']
+    restart: always
+    command: healthWatcher
+    env_file: .env.avax
+    environment:
+      NET_ID: 43114
+      REDIS_URL: redis://redis/4
+    depends_on: [redis, avax-server]
+
+  avax-worker1:
+    image: tornadocash/relayer:sidechain-beta
+    profiles: ['avax']
+    restart: always
+    command: worker
+    env_file: .env.avax
+    environment:
+      NET_ID: 43114
+      REDIS_URL: redis://redis/4
+    depends_on: [redis, avax-server]
+
+  # -------------------------------------------------- #
+
+  # ---------------------- OP ------------------------ #
+
+  op-server:
+    image: tornadocash/relayer:sidechain-beta
+    profiles: ['op']
+    restart: always
+    command: server
+    env_file: .env.op
+    environment:
+      NET_ID: 10
+      REDIS_URL: redis://redis/5
+      nginx_proxy_read_timeout: 600
+    depends_on: [redis]
+
+  op-healthWatcher:
+    image: tornadocash/relayer:sidechain-beta
+    profiles: ['op']
+    restart: always
+    command: healthWatcher
+    env_file: .env.op
+    environment:
+      NET_ID: 10
+      REDIS_URL: redis://redis/5
+    depends_on: [redis, op-server]
+
+  op-worker1:
+    image: tornadocash/relayer:sidechain-beta
+    profiles: ['op']
+    restart: always
+    command: worker
+    env_file: .env.op
+    environment:
+      NET_ID: 10
+      REDIS_URL: redis://redis/5
+    depends_on: [redis, op-server]
+
+  # -------------------------------------------------- #
+
+  # ---------------------- Arbitrum ----------------------- #
+
+  arb-server:
+    image: tornadocash/relayer:sidechain-beta
+    profiles: ['arb']
+    restart: always
+    command: server
+    env_file: .env.arb
+    environment:
+      NET_ID: 42161
+      REDIS_URL: redis://redis/6
+      nginx_proxy_read_timeout: 600
+    depends_on: [redis]
+
+  arb-healthWatcher:
+    image: tornadocash/relayer:sidechain-beta
+    profiles: ['arb']
+    restart: always
+    command: healthWatcher
+    env_file: .env.arb
+    environment:
+      NET_ID: 42161
+      REDIS_URL: redis://redis/6
+    depends_on: [redis, arb-server]
+
+  arb-worker1:
+    image: tornadocash/relayer:sidechain-beta
+    profiles: ['arb']
+    restart: always
+    command: worker
+    env_file: .env.arb
+    environment:
+      NET_ID: 42161
+      REDIS_URL: redis://redis/6
+    depends_on: [redis, arb-server]
+
+  # -------------------------------------------------- #
 
 volumes:
   conf:
