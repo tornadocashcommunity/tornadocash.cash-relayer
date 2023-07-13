@@ -47,6 +47,14 @@ function install_requred_packages(){
   echo -e "\nAll required packages installed successfully";
 }
 
+function install_node(){
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash;
+  . ~/.nvm/nvm.sh;
+  . ~/.profile;
+  . ~/.bashrc;
+  nvm install 14.21.3;
+}
+
 function install_repositories(){
     git clone $relayer_soft_git_repo -b main-v4 $relayer_folder
     git clone $relayer_soft_git_repo -b mainnet-v4 $relayer_mainnet_soft_source_folder;
@@ -73,18 +81,18 @@ function configure_firewall(){
 function configure_nginx_reverse_proxy(){
   systemctl stop apache2;
 
-  cp $relayer_mainnet_soft_source_folder/tornado.conf /etc/nginx/sites-available/default;
+  cp $relayer_folder/tornado.conf /etc/nginx/sites-available/default;
   echo "stream { map_hash_bucket_size 128; map_hash_max_size 128; include /etc/nginx/conf.d/streams/*.conf; }" >> /etc/nginx/nginx.conf;
   mkdir /etc/nginx/conf.d/streams;
-  cp $relayer_mainnet_soft_source_folder/tornado-stream.conf /etc/nginx/conf.d/streams/tornado-stream.conf;
+  cp $relayer_folder/tornado-stream.conf /etc/nginx/conf.d/streams/tornado-stream.conf;
 
   systemctl restart nginx;
   systemctl stop nginx;
 }
 
 function build_relayer_docker_containers(){
-    docker build -t tornadorelayer:mainnet $relayer_mainnet_soft_source_folder;
-    docker build -t tornadorelayer:sidechain $relayer_sidechains_soft_source_folder;
+    cd $relayer_mainnet_soft_source_folder && npm run build;
+    cd $relayer_sidechains_soft_source_folder && npm run build;
 }
 
 function prepare_environments(){
@@ -95,6 +103,7 @@ function prepare_environments(){
 
 function main(){
   install_requred_packages;
+  install_node;
   install_repositories;
   configure_firewall;
   configure_nginx_reverse_proxy;
