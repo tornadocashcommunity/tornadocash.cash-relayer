@@ -1,8 +1,8 @@
-# Relayer for Tornado Cash [![Build Status](https://github.com/tornadocash/relayer/workflows/build/badge.svg)](https://github.com/tornadocash/relayer/actions) [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/tornadocash/relayer?logo=docker&logoColor=%23FFFFFF&sort=semver)](https://hub.docker.com/repository/docker/tornadocash/relayer)
+# Relayer for Tornado Cash [![Build Status](https://github.com/tornadocash/relayer/workflows/build/badge.svg)](https://github.com/tornadocash/relayer/actions) ![Static Badge](https://img.shields.io/badge/version-5.1.0-blue?logo=docker)
 
-__*Tornado Cash was sanctioned by the US Treasury on 08/08/2022, this makes it illegal for US citizens to interact with Tornado Cash and all of it's associated deloyed smart contracts. Please understand the laws where you live and take all necessary steps to protect and anonomize yourself.__
+__*Tornado Cash was sanctioned by the US Treasury on 08/08/2022, this makes it illegal for US citizens to interact with Tornado Cash and all of it's associated deployed smart contracts. Please understand the laws where you live and take all necessary steps to protect and anonymize yourself.__
 
-__*It is recommended to run your Relayer on a VPS instnace ([Virtual Private Server](https://njal.la/)). Ensure SSH configuration is enabled for security, you can find information about SSH keygen and management [here](https://www.ssh.com/academy/ssh/keygen).__
+__*It is recommended to run your Relayer on a VPS instance ([Virtual Private Server](https://njal.la/)). Ensure SSH configuration is enabled for security, you can find information about SSH keygen and management [here](https://www.ssh.com/academy/ssh/keygen).__
 
 ## Deploy with docker-compose (recommended)
 
@@ -29,73 +29,47 @@ _* Warning: Failure to configure SSH as the first UFW rule, will lock you out of
 1. Make sure UFW is installed by running `apt update` and `apt install ufw` 
 2. Allow SSH in the first position in UFW by running `ufw insert 1 allow ssh`*
 3. Allow HTTP, and HTTPS by running `ufw allow https/tcp/http`
-4. Finalise changes and enable firewall `ufw enable`
+4. Finalize changes and enable firewall `ufw enable`
 
-__NETWORK DEPLOYMENT OPTIONS__ 
-
-_Ethereum (eth), Binance (bnb), Gnosis (xdai), Polygon (matic), Optimisim (op), Arbitrum (arb) and Goerli (geth)_
-
-__SINGLE NETWORK DEPLOYMENT__
+__DEPLOYMENT__
 1. Clone the repository and enter the directory 
-  - `git clone https://development.tornadocash.community/tornadocash/classic-relayer && cd classic-relayer`
-2. Clone the example enviroment file `.env.example` to configure for the perferred network 
-  - By default each network is preconfigured the naming of `.env.<NETWORK SYMBOL>`
-  - `cp .env.example .env.eth` 
+  - `git clone https://git.tornado.ws/tornadocash/classic-relayer -b mainnet-v5 && cd classic-relayer`
+2. Clone the example environment file `.env.example` to configure for the preferred network - `cp .env.example .env` , then fill `.env` file.
   - Set `PRIVATE_KEY` for your relayer address (remove the 0x from your private key)
   - Set `VIRTUAL_HOST` and `LETSENCRYPT_HOST` to your domain address
     - add a A  record DNS record with the value assigned to your instance IP address to configure the domain
   - Set `RELAYER_FEE` to what you would like to charge as your fee (remember 0.3% is deducted from your staked relayer balance)
   - Set `RPC_URL` to a non-censoring RPC endpoint (You can [run your own](https://github.com/feshchenkod/rpc-nodes), or use a [free option](https://chainnodes.org/))
   - Set `ORACLE_RPC_URL` to an Ethereum native RPC endpoint
+
 4. Uncomment the `env_file` lines (remove `# `) for the associated network services in `docker-compose.yml`
-5. Build and deploy the docker source by specifying the network through `--profile <NETWORK_SYMBOL>`
-  - `docker-compose --profile eth up -d`
+5. Build and deploy the docker source by specifying the network through:
+
+  - `npm run build`
+  - `docker-compose up -d`
 5. Visit your domain address and check the `/status` endpoint and ensure there is no errors in the `status` field
 
 __NGINX REVERSE PROXY__
 1. Copy the pre-modified nginx policy as your default policy 
   - `cp tornado.conf /etc/nginx/sites-available/default` 
-2. Append the default nginx configuraiton to include streams
+2. Append the default nginx configuration to include streams
   - `echo "stream {  map_hash_bucket_size 128;  map_hash_max_size 128;  include /etc/nginx/conf.d/streams/*.conf; }" >> /etc/nginx/nginx.conf`
-3. Create the stream configruation
+3. Create the stream configuration
   - `mkdir /etc/nginx/conf.d/streams && cp tornado-stream.conf /etc/nginx/conf.d/streams/tornado-stream.conf`
 4. Start nginx to make sure the configuration is correct 
   - `sudo systemctl restart nginx`
 5. Stop nginx
   - `sudo systemctl stop nginx`
 
-__MULTIPLE NETWORK DEPLOYMENT__
-1. Setup the instructions stated to setup an nginx reverse proxy
-2. Clone the example enviroment file `.env.example` for the networks of choice and configure
-  - By default each network is preconfigured the naming of `.env.<NETWORK SYMBOL>`
-  - `cp .env.example .env.eth` 
-  - `cp .env.example .env.bnb`
-  - `cp .env.example .env.arb`
-  - `cp .env.example .env.op`
-  - `cp .env.example .env.xdai`
-  - Set `PRIVATE_KEY` to your relayer address (remove the 0x from your private key) to each environment file
-    - *It is recommended not to reuse the same private keys for each network as a security measure*
-  - Set `VIRTUAL_HOST` and `LETSENCRYPT_HOST` a unique subndomain for every network to each environment file
-    - eg: `mainnet.example.com` for Ethereum, `binance.example.com` for Binance etc
-    - ensure that the parent domain domain is specified first with the subdomain after sperated by a comma for SAN certificates
-      - eg: `VIRTUAL_HOST=example.com,eth.example.com` and `LETSENCRYPT_HOST=example.com,eth.example.com` 
-    - add a A wildcard record DNS record with the value assigned to your instance IP address to configure submdomains
-  - Set `RELAYER_FEE` to what you would like to charge as your fee (remember 0.3% is deducted from your staked relayer balance)
-  - Set `RPC_URL` to a non-censoring RPC (You can [run your own](https://github.com/feshchenkod/rpc-nodes), or use a [free option](https://chainnodes.org/))
-  - Set `ORACLE_RPC_URL` to an Ethereum native RPC endpoint
-3. Uncomment the `env_file` lines (remove `# `) for the associated network services in `docker-compose.yml`
-4. Build and deploy the docker source for the configured neworks specified via `--profile <NETWORK_SYMBOL>`
-  - `docker-compose --profile eth --profile bnb --profile arb --profile --profile op --profile xdai up -d`
-5. Visit your domain addresses and check each `/status` endpoint to ensure there is no errors in the `status` fields
-
 ## Run locally
 
-1. `npm i`
-2. `cp .env.example .env`
-3. Modify `.env` as needed
-4. `npm run start`
-5. Go to `http://127.0.0.1:8000`
-6. In order to execute withdraw request, you can run following command
+1. `npm i -g yarn` (if yarn not installed in your system)
+2. `yarn`
+3. `cp .env.mainnet.example .env`
+4. Modify `.env` as needed
+5. `yarn start`
+6. Go to `http://127.0.0.1:8000`
+7. In order to execute withdraw request, you can run following command
 
 ```bash
 curl -X POST -H 'content-type:application/json' --data '<input data>' http://127.0.0.1:8000/relay
