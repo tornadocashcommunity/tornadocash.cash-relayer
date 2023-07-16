@@ -1,6 +1,6 @@
 const { instances, netId } = require('./config')
-const { poseidon } = require('@tornado/circomlib')
-const { toBN, toChecksumAddress, BN, fromWei, isAddress, toWei } = require('web3-utils')
+const { poseidon } = require('circomlib')
+const { toBN, toChecksumAddress, BN, fromWei, isAddress, toWei, toHex } = require('web3-utils')
 
 const TOKENS = {
   torn: {
@@ -161,6 +161,7 @@ module.exports = {
   toChecksumAddress,
   fromWei,
   toWei,
+  toHex,
   BN,
   isAddress,
   RelayerError,

@@ -1,6 +1,6 @@
 const fs = require('fs')
 const MerkleTree = require('fixed-merkle-tree')
-const { GasPriceOracle } = require('gas-price-oracle')
+const { GasPriceOracle } = require('@tornado/gas-price-oracle')
 const { Utils, Controller } = require('tornado-anonymity-mining')
 
 const swapABI = require('../abis/swap.abi.json')
@@ -15,6 +15,7 @@ const {
   sleep,
   toBN,
   toWei,
+  toHex,
   fromWei,
   toChecksumAddress,
   RelayerError,
@@ -46,7 +47,7 @@ let txManager
 let controller
 let swap
 let minerContract
-const gasPriceOracle = new GasPriceOracle({ defaultRpc: oracleRpcUrl })
+let gasPriceOracle
 
 async function fetchTree() {
   const elements = await redis.get('tree:elements')
@@ -93,6 +94,12 @@ async function start() {
         BASE_FEE_RESERVE_PERCENTAGE: baseFeeReserve,
       },
     })
+    gasPriceOracle = new GasPriceOracle({
+      defaultRpc: oracleRpcUrl,
+      minPriority: 2,
+      percentile: 5,
+      blocksCount: 20,
+    })
     swap = new web3.eth.Contract(swapABI, await resolver.resolve(torn.rewardSwap.address))
     minerContract = new web3.eth.Contract(miningABI, await resolver.resolve(torn.miningV2.address))
     redisSubscribe.subscribe('treeUpdate', fetchTree)
@@ -111,31 +118,50 @@ async function start() {
   }
 }
 
-function checkFee({ data }) {
+function checkFee({ data }, gasInfo) {
   if (data.type === jobType.TORNADO_WITHDRAW) {
-    return checkTornadoFee(data)
+    return checkTornadoFee(data, gasInfo)
   }
   return checkMiningFee(data)
 }
 
 async function getGasPrice() {
-  const block = await web3.eth.getBlock('latest')
+  try {
+    const { maxFeePerGas, gasPrice } = await gasPriceOracle.getTxGasParams({
+      legacySpeed: 'fast',
+      bumpPercent: 10,
+    })
 
-  if (block && block.baseFeePerGas) {
-    return toBN(block.baseFeePerGas)
+    return toBN(maxFeePerGas || gasPrice)
+  } catch (e) {
+    const block = await web3.eth.getBlock('latest')
+
+    if (block && block.baseFeePerGas) {
+      return toBN(block.baseFeePerGas)
+    }
+
+    const gasPrice = await web3.eth.getGasPrice()
+    return toBN(gasPrice)
   }
-
-  const { fast } = await gasPriceOracle.gasPrices()
-  return toBN(toWei(fast.toString(), 'gwei'))
 }
 
-async function checkTornadoFee({ args, contract }) {
+async function estimateWithdrawalGasLimit(tx) {
+  try {
+    const fetchedGasLimit = await web3.eth.estimateGas(tx)
+    const bumped = Math.floor(fetchedGasLimit * 1.2)
+    return bumped
+  } catch (e) {
+    console.log('Estimation error: ', e)
+    return gasLimits[jobType.TORNADO_WITHDRAW]
+  }
+}
+
+async function checkTornadoFee({ args, contract }, { gasLimit, gasPrice }) {
   const { currency, amount, decimals } = getInstance(contract)
   const [fee, refund] = [args[4], args[5]].map(toBN)
-  const gasPrice = await getGasPrice()
 
   const ethPrice = await redis.hget('prices', currency)
-  const expense = gasPrice.mul(toBN(gasLimits[jobType.TORNADO_WITHDRAW]))
+  const expense = toBN(gasPrice).mul(toBN(gasLimit))
 
   const feePercent = toBN(fromDecimals(amount, decimals))
     .mul(toBN(parseInt(tornadoServiceFee * 1e10)))
@@ -233,12 +259,17 @@ async function getTxObject({ data }) {
       calldata = contract.methods.withdraw(data.proof, ...data.args).encodeABI()
     }
 
-    return {
+    const gasPrice = await getGasPrice()
+    const incompleteTx = {
       value: data.args[5],
+      from: txManager.address, // Required, because without it relayerRegistry.burn will fail, because msg.sender is not relayer
       to: contract._address,
       data: calldata,
-      gasLimit: gasLimits['WITHDRAW_WITH_EXTRA'],
+      gasPrice: toHex(gasPrice),
     }
+    const gasLimit = await estimateWithdrawalGasLimit(incompleteTx)
+
+    return Object.assign(incompleteTx, { gasLimit })
   } else {
     const method = data.type === jobType.MINING_REWARD ? 'reward' : 'withdraw'
     const calldata = minerContract.methods[method](data.proof, data.args).encodeABI()
@@ -281,8 +312,9 @@ async function processJob(job) {
 }
 
 async function submitTx(job, retry = 0) {
-  await checkFee(job)
-  currentTx = await txManager.createTx(await getTxObject(job))
+  const rawTx = await getTxObject(job)
+  await checkFee(job, rawTx)
+  currentTx = await txManager.createTx(rawTx)
 
   if (job.data.type !== jobType.TORNADO_WITHDRAW) {
     await fetchTree()
