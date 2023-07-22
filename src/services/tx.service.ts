@@ -1,5 +1,5 @@
 import { TransactionData, TxManager } from 'tx-manager';
-import { GasPriceOracle } from 'gas-price-oracle';
+import { GasPriceOracle } from '@tornado/gas-price-oracle';
 import { Provider } from '@ethersproject/providers';
 import { serialize } from '@ethersproject/transactions';
 import { formatEther, parseUnits } from 'ethers/lib/utils';
@@ -12,7 +12,7 @@ import { Job } from 'bullmq';
 import { RelayerJobData } from '../queue';
 import { ConfigService } from './config.service';
 import { container, injectable } from 'tsyringe';
-import { parseJSON } from '../modules/utils';
+import { parseJSON, bump } from '../modules/utils';
 import { getOvmGasPriceOracle } from '../modules/contracts';
 
 export type WithdrawalData = {
@@ -50,6 +50,9 @@ export class TxService {
     const gasPriceOracleConfig = {
       defaultRpc: rpcUrl,
       chainId: netId,
+      minPriority: netId === ChainIds.ethereum || ChainIds.goerli ? 2 : 0.05,
+      percentile: 5,
+      blocksCount: 20,
       fallbackGasPrices: this.config?.fallbackGasPrices,
     };
     this.txManager = new TxManager({
@@ -116,15 +119,64 @@ export class TxService {
     }
   }
 
+  async getGasPrice(): Promise<BigNumber> {
+    let bumpPercent: number;
+    switch (netId) {
+      case ChainIds.goerli:
+        bumpPercent = 50;
+        break;
+      case ChainIds.polygon:
+      case ChainIds.avalanche:
+      case ChainIds.xdai:
+        bumpPercent = 30;
+        break;
+      default:
+        bumpPercent = 10;
+    }
+
+    try {
+      const gasParams = await this.oracle.getTxGasParams({
+        legacySpeed: 'fast',
+        bumpPercent,
+      });
+
+      console.log(BigNumber.from(gasParams['maxFeePerGas']).toString());
+
+      return BigNumber.from(gasParams['maxFeePerGas'] || gasParams['gasPrice']);
+    } catch (e) {
+      const feeData = await this.provider.getFeeData();
+      return bump(feeData.maxFeePerGas, bumpPercent);
+    }
+  }
+
+  async estimateGasLimit(txData: TransactionData): Promise<BigNumber> {
+    try {
+      const fetchedGasLimit = await this.provider.estimateGas(txData);
+      const bumped = bump(fetchedGasLimit, 10);
+      console.log('Gas limit: ', bumped.toString());
+      return bumped;
+    } catch (e) {
+      console.log('Estimation error: ', e);
+      return BigNumber.from(this.gasLimit);
+    }
+  }
+
   async prepareTxData(data: WithdrawalData): Promise<TransactionData> {
     const { contract, proof, args } = data;
     const calldata = this.tornadoProxy.interface.encodeFunctionData('withdraw', [contract, proof, ...args]);
-    return {
+
+    const gasPrice = await this.getGasPrice();
+    const incompleteTxData: TransactionData = {
       value: args[5],
       to: this.tornadoProxy.address,
+      from: this.txManager.address, // Required to estimate relayerRegistry.burn for Ethereum Mainnet withdrawals
       data: calldata,
       gasLimit: this.gasLimit,
+      gasPrice: gasPrice,
     };
+    const gasLimit = await this.estimateGasLimit(incompleteTxData);
+
+    return Object.assign(incompleteTxData, { gasLimit });
   }
 
   async getL1Fee(data: WithdrawalData, gasPrice: BigNumber) {
@@ -145,18 +197,14 @@ export class TxService {
     return await ovmOracle.getL1Fee(tx);
   }
 
-  async checkTornadoFee(data: WithdrawalData) {
+  async checkTornadoFee(data: WithdrawalData, txData: TransactionData) {
     const { contract, args } = data;
     const instance = this.config.getInstance(contract);
     if (!instance) throw new Error('Instance not found');
     const { currency, amount, decimals } = instance;
     const [fee, refund] = [args[4], args[5]].map(BigNumber.from);
-    const gasPrice = await this.getGasPrice();
-    let gasLimit = this.gasLimit;
-    if (!this.config.isLightMode) {
-      gasLimit = gasLimits[RelayerJobType.TORNADO_WITHDRAW];
-    }
-    let operationCost = gasPrice.mul(gasLimit);
+    const gasPrice = BigNumber.from(txData.gasPrice);
+    let operationCost = gasPrice.mul(txData.gasLimit);
 
     if (netId === ChainIds.optimism) {
       const l1Fee = await this.getL1Fee(data, gasPrice);
@@ -182,15 +230,6 @@ export class TxService {
     if (fee.lt(desiredFee)) {
       throw new Error('Provided fee is not enough. Probably it is a Gas Price spike, try to resubmit.');
     }
-  }
-
-  async getGasPrice(): Promise<BigNumber> {
-    const gasPrices = await this.oracle.gasPrices();
-    let gasPrice = gasPrices['fast'];
-    if ('maxFeePerGas' in gasPrices) {
-      gasPrice = gasPrices['maxFeePerGas'];
-    }
-    return parseUnits(String(gasPrice), 'gwei');
   }
 }
 

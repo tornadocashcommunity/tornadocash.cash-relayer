@@ -27,7 +27,7 @@ import { availableIds, netIds, NetInstances } from 'torn-token';
 import { getAddress } from 'ethers/lib/utils';
 import { BigNumber, providers, Wallet } from 'ethers';
 import { container, singleton } from 'tsyringe';
-import { FallbackGasPrices } from 'gas-price-oracle';
+import { FallbackGasPrices } from '@tornado/gas-price-oracle';
 import { RedisStore } from '../modules/redis';
 
 type relayerQueueName = `relayer_${availableIds}`;

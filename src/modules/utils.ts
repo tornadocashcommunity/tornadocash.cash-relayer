@@ -1,3 +1,5 @@
+import { BigNumber, BigNumberish } from 'ethers';
+
 export const parseJSON = (str: string) => {
   let parsed = null;
   try {
@@ -7,4 +9,10 @@ export const parseJSON = (str: string) => {
   } catch (e) {
     return parsed;
   }
+};
+
+export const bump = (value: BigNumberish, percent: number | BigNumber): BigNumber => {
+  const hundredPercents = BigNumber.from(100);
+
+  return BigNumber.from(value).mul(hundredPercents.add(percent)).div(hundredPercents);
 };

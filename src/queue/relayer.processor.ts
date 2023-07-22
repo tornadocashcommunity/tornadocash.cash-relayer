@@ -23,8 +23,8 @@ export const relayerProcessor: RelayerProcessor = async (job) => {
     const txService = getTxService();
     txService.currentJob = job;
     const withdrawalData = job.data;
-    await txService.checkTornadoFee(withdrawalData);
     const txData = await txService.prepareTxData(withdrawalData);
+    await txService.checkTornadoFee(withdrawalData, txData);
     return await txService.sendTx(txData);
   } catch (e) {
     if ((e instanceof ExecutionError && e.code === 'REVERTED') || job.attemptsMade === txJobAttempts) {
