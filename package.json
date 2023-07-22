@@ -1,6 +1,6 @@
 {
   "name": "classic-relay",
-  "version": "5.0.0",
+  "version": "6.0.0",
   "description": "Relayer for Tornado.cash privacy solution. https://tornado.cash",
   "scripts": {
     "start": "yarn build && docker-compose up -d redis && concurrently \"yarn server\" \"yarn txWorker\" \"yarn healthWorker\"",
