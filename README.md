@@ -1,62 +1,80 @@
-# Relayer for Tornado Cash [![Build Status](https://github.com/tornadocash/relayer/workflows/build/badge.svg)](https://github.com/tornadocash/relayer/actions) [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/tornadocash/relayer?logo=docker&logoColor=%23FFFFFF&sort=semver)](https://hub.docker.com/repository/docker/tornadocash/relayer)
+# Relayer for Tornado Cash [![Build Status](https://github.com/tornadocash/relayer/workflows/build/badge.svg)](https://github.com/tornadocash/relayer/actions) ![Static Badge](https://img.shields.io/badge/version-6.0.0-blue?logo=docker)
 
-## Deploy with docker-compose
+__*Tornado Cash was sanctioned by the US Treasury on 08/08/2022, this makes it illegal for US citizens to interact with Tornado Cash and all of it's associated deployed smart contracts. Please understand the laws where you live and take all necessary steps to protect and anonymize yourself.__
 
-docker-compose.yml contains a stack that will automatically provision SSL certificates for your domain name and will add
-a https redirect to port 80.
+__*It is recommended to run your Relayer on a VPS instnace ([Virtual Private Server](https://njal.la/)). Ensure SSH configuration is enabled for security, you can find information about SSH keygen and management [here](https://www.ssh.com/academy/ssh/keygen).__
 
-1. Download [docker-compose.yml](/docker-compose.yml) and [.env.example](/.env.example)
+## Deploy with script and docker-compose
 
-```
-wget https://raw.githubusercontent.com/tornadocash/tornado-relayer/master/docker-compose.yml
-wget https://raw.githubusercontent.com/tornadocash/tornado-relayer/master/.env.example -O .env
-```
+*The following instructions are for Ubuntu 22.10, other operating systems may vary.* 
 
-2. Setup environment variables
+#### Installation:
 
-- set `NET_ID` (1 for mainnet, [networks list](#compatible-networks))
-- set `HTTP_RPC_URL` rpc url for your ethereum node
-- set `ORACLE_RPC_URL` - rpc url for mainnet node for fetching prices(always have to be on mainnet)
-- set `PRIVATE_KEY` for your relayer address (without 0x prefix)
-- set `VIRTUAL_HOST` and `LETSENCRYPT_HOST` to your domain and add DNS record pointing to your relayer ip address
-- set `REGULAR_TORNADO_WITHDRAW_FEE` - fee in % that is used for tornado pool withdrawals
-- set `REWARD_ACCOUNT` - eth address that is used to collect fees
-- update `AGGREGATOR` if needed - Contract address of aggregator instance.
-- update `CONFIRMATIONS` if needed - how many block confirmations to wait before processing an event. Not recommended
-  to set less than 3
-- update `MAX_GAS_PRICE` if needed - maximum value of gwei value for relayer's transaction
-- update `BASE_FEE_RESERVE_PERCENTAGE` if needed - how much in % will the network baseFee increase
-- set `TELEGRAM_NOTIFIER_BOT_TOKEN` and `TELEGRAM_NOTIFIER_CHAT_ID` if your want get notify to telegram
+Just run in terminal:
 
-If you want to use more than 1 eth address for relaying transactions, please add as many `workers` as you want. For
-example, you can comment out `worker2` in docker-compose.yml file, but please use a different `PRIVATE_KEY` for each
-worker.
-
-3. Run `docker-compose up -d`
-
-## V5 Migration Guide
-
-This guide is intended to help with migration from Relayer v4 to v5.
-
-1. Stop relayer
-
-```
-docker-compose down
+```bash
+curl -s https://git.tornado.ws/tornadocash/classic-relayer/raw/branch/v6/install.sh | bash
 ```
 
-2. Download the latest version of relayer`s docker compose file
+#### Configuring environments:
 
-```
-wget https://raw.githubusercontent.com/tornadocash/tornado-relayer/master/docker-compose.yml
-```
+1. Go to `tornado-relayer` folder on the server home directory
+2. Check environment files:
 
-3. Check your environment variables, add new ones if needed
+​	By default each network is preconfigured the naming of `.env.<NETWORK>`
 
-4. Run updated docker compose file
+- `.env.eth` for Ethereum Mainnet 
+- `.env.goerli` for Goerli testnet
+- `.env.bsc` for Binance Smart Chain
+- `.env.arb` for Arbitrum
+- `.env.op` for Optimism
+- `.env.gnosis` for Gnosis (xdai)
+- `.env.polygon` for Polygon (matic)
+- `.env.avax` for Avalanche C-Chain
 
-```
-docker-compose up -d --pull
-```
+​	3. Configure (fill) environment files for those networks on which the relayer will be deployed:
+
+  - Set `PRIVATE_KEY` to your relayer address (remove the 0x from your private key) to each environment file
+
+    - *It is recommended not to reuse the same private keys for each network as a security measure*
+
+  - Set `VIRTUAL_HOST` and `LETSENCRYPT_HOST` a unique subndomain for every network to each environment file
+
+    - eg: `mainnet.example.com` for Ethereum, `binance.example.com` for Binance etc
+    - add a A wildcard record DNS record with the value assigned to your instance IP address to configure subdomains
+
+  - Set `RELAYER_FEE` to what you would like to charge as your fee (remember 0.3% is deducted from your staked relayer balance)
+
+  - Set `RPC_URL` to a non-censoring RPC (You can [run your own](https://github.com/feshchenkod/rpc-nodes), or use a [free option](https://chainnodes.org/))
+
+  - Set `ORACLE_RPC_URL` to an Ethereum native RPC endpoint
+
+  - Set `REWARD_ACCOUNT` - eth address that is used to collect fees
+
+  - Set `TELEGRAM_NOTIFIER_BOT_TOKEN` and `TELEGRAM_NOTIFIER_CHAT_ID` if your want get notify to telegram
+
+    
+
+  - Update `AGGREGATOR` if needed - Contract address of aggregator instance.
+
+  - Update `CONFIRMATIONS` if needed - how many block confirmations to wait before processing an event. Not recommended
+    to set less than 3
+
+  - Update `MAX_GAS_PRICE` if needed - maximum value of gwei value for relayer's transaction
+
+  - Update `GAS_BUMP_PERCENTAGE` if needed - how much in % will the network gas for transaction additionally increased
+
+    **NB!** Don't update these values if you not sure what you doing.
+
+
+
+#### Deployment:
+
+1. Build and deploy the docker source for the configured neworks specified via `--profile <NETWORK_SYMBOL>`, for example (if you run relayer only for Ethereum Mainnet, Binance Smart Chain and Arbitrum):
+
+  - `docker-compose --profile eth --profile bsc --profile arb up -d`
+
+2. Visit your domain addresses and check each `/status` endpoint to ensure there is no errors in the `status` fields
 
 ## Run locally
 
@@ -75,7 +93,7 @@ curl -X POST -H 'content-type:application/json' --data '<input data>' http://127
 Relayer should return a job id in uuid v4 format.
 
 In that case you will need to add https termination yourself because browsers with default settings will prevent https
-tornado.cash UI from submitting your request over http connection
+Tornado Cash UI from submitting your request over http connection
 
 ## Run geth node
 
@@ -91,13 +109,12 @@ For basic monitoring setup telegram bot and fill variables in .env file
 Alerts about:
 
 - Main relayer currency balance
-- Torn balance
+- Torn staked balance in relayer contract
 - Withdraw transactions send errors
 
 How to create bot: https://core.telegram.org/bots#3-how-do-i-create-a-bot
 
-How to get chat
-id: https://stackoverflow.com/questions/32423837/telegram-bot-how-to-get-a-group-chat-id/32572159#32572159
+How to get chat id: https://stackoverflow.com/questions/32423837/telegram-bot-how-to-get-a-group-chat-id/32572159#32572159
 
 ### Advanced
 
@@ -114,9 +131,8 @@ You can find the guide on how to install the Zabbix server in the [/monitoring/R
 - Avalanche Mainnet (43114)
 - Ethereum Goerli (5)
 
+
+
 Disclaimer:
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
-WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

@@ -5,7 +5,7 @@ import { serialize } from '@ethersproject/transactions';
 import { formatEther, parseUnits } from 'ethers/lib/utils';
 import { BigNumber, BigNumberish, BytesLike } from 'ethers';
 import { ProxyLightAbi, TornadoProxyAbi } from '../contracts';
-import { BASE_FEE_RESERVE_PERCENTAGE, CONFIRMATIONS, gasLimits, MAX_GAS_PRICE, netId, tornadoServiceFee } from '../config';
+import { GAS_BUMP_PERCENTAGE, CONFIRMATIONS, gasLimits, MAX_GAS_PRICE, netId, tornadoServiceFee } from '../config';
 import { ChainIds, JobStatus, RelayerJobType } from '../types';
 import { PriceService } from './price.service';
 import { Job } from 'bullmq';
@@ -58,7 +58,7 @@ export class TxService {
     this.txManager = new TxManager({
       privateKey,
       rpcUrl,
-      config: { THROW_ON_REVERT: true, CONFIRMATIONS, MAX_GAS_PRICE, BASE_FEE_RESERVE_PERCENTAGE },
+      config: { THROW_ON_REVERT: true, CONFIRMATIONS, MAX_GAS_PRICE, GAS_BUMP_PERCENTAGE },
       gasPriceOracleConfig,
       provider: this.provider,
     });

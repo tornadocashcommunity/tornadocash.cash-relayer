@@ -12,7 +12,7 @@ export const redisUrl = process.env.REDIS_URL || 'redis://127.0.0.1:6379';
 export const rpcUrl = process.env.HTTP_RPC_URL;
 export const CONFIRMATIONS = Number(process.env.CONFIRMATIONS ?? 4);
 export const MAX_GAS_PRICE = Number(process.env.MAX_GAS_PRICE ?? 1000);
-export const BASE_FEE_RESERVE_PERCENTAGE = Number(process.env.BASE_FEE_RESERVE_PERCENTAGE ?? 25);
+export const GAS_BUMP_PERCENTAGE = Number(process.env.GAS_BUMP_PERCENTAGE ?? 5);
 export const mainnetRpcUrl = process.env.MAINNET_RPC_URL || process.env.ORACLE_RPC_URL || 'https://api.securerpc.com/v1';
 export const oracleRpcUrl = process.env.ORACLE_RPC_URL || 'https://api.securerpc.com/v1';
 export const offchainOracleAddress = '0x07D91f5fb9Bf7798734C3f606dB065549F6893bb';
@@ -22,7 +22,7 @@ export const instances = tornConfig.instances;
 export const torn = tornConfig;
 export const port = Number(process.env.APP_PORT) || 8000;
 export const host = isProduction ? 'https://' + process.env.VIRTUAL_HOST : `http://localhost:${port}`;
-export const tornadoServiceFee = Number(process.env.REGULAR_TORNADO_WITHDRAW_FEE);
+export const tornadoServiceFee = Number(process.env.RELAYER_FEE);
 export const rewardAccount = process.env.REWARD_ACCOUNT;
 export const tornadoGoerliProxy = '0x454d870a72e29d5E5697f635128D18077BD04C60';
 export const ovmGasPriceOracleContract = '0x420000000000000000000000000000000000000F';
@@ -48,7 +48,6 @@ export const minimumBalance = BigNumber.from(minimumBalances[netId] * 10) // BN 
   .mul(decimals.div(10))
   .toString();
 export const minimumTornBalance = BigNumber.from(500).mul(decimals).toString();
-export const baseFeeReserve = Number(process.env.BASE_FEE_RESERVE_PERCENTAGE);
 export const tornToken = {
   tokenAddress: '0x77777FeDdddFfC19Ff86DB637967013e6C6A116C',
   symbol: 'TORN',
