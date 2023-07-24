@@ -47,7 +47,7 @@ services:
 
     eth-server:
         build: .
-        image: tornadocash/relayer:mainnet-v4
+        image: tornadocash/relayer:mainnet-v5
         profiles: ["eth"]
         restart: always
         command: server
@@ -59,7 +59,7 @@ services:
         depends_on: [redis]
 
     eth-treeWatcher:
-        image: tornadocash/relayer:mainnet-v4
+        image: tornadocash/relayer:mainnet-v5
         profiles: ["eth"]
         restart: always
         command: treeWatcher
@@ -70,7 +70,7 @@ services:
         depends_on: [redis, eth-server]
 
     eth-priceWatcher:
-        image: tornadocash/relayer:mainnet-v4
+        image: tornadocash/relayer:mainnet-v5
         profiles: ["eth"]
         restart: always
         command: priceWatcher
@@ -81,7 +81,7 @@ services:
         depends_on: [redis, eth-server]
 
     eth-healthWatcher:
-        image: tornadocash/relayer:mainnet-v4
+        image: tornadocash/relayer:mainnet-v5
         profiles: ["eth"]
         restart: always
         command: healthWatcher
@@ -92,7 +92,7 @@ services:
         depends_on: [redis, eth-server]
 
     eth-worker1:
-        image: tornadocash/relayer:mainnet-v4
+        image: tornadocash/relayer:mainnet-v5
         profiles: ["eth"]
         restart: always
         command: worker
@@ -105,7 +105,7 @@ services:
     # # This is additional worker for ethereum mainnet
     # # So you can process transactions from multiple addresses, but before it you need to set up those addresses as workers
     #  eth-worker2:
-    #    image: tornadorelayer:mainnet
+    #    image: tornadocash/relayer:mainnet-v5
     #    profiles: [ 'eth' ]
     #    restart: always
     #    command: worker
@@ -166,7 +166,7 @@ services:
     # ---------------------- BSC (Binance Smart Chain) ----------------------- #
 
     bsc-server:
-        image: tornadocash/relayer:sidechain-beta
+        image: tornadocash/relayer:sidechain-v5
         profiles: ["bsc"]
         restart: always
         command: server
@@ -178,7 +178,7 @@ services:
         depends_on: [redis]
 
     bsc-healthWatcher:
-        image: tornadocash/relayer:sidechain-beta
+        image: tornadocash/relayer:sidechain-v5
         profiles: ["bsc"]
         restart: always
         command: healthWatcher
@@ -189,7 +189,7 @@ services:
         depends_on: [redis, bsc-server]
 
     bsc-worker1:
-        image: tornadocash/relayer:sidechain-beta
+        image: tornadocash/relayer:sidechain-v5
         profiles: ["bsc"]
         restart: always
         command: worker
@@ -204,7 +204,7 @@ services:
     # ---------------------- Polygon (MATIC) --------------------- #
 
     polygon-server:
-        image: tornadocash/relayer:sidechain-beta
+        image: tornadocash/relayer:sidechain-v5
         profiles: ["polygon"]
         restart: always
         command: server
@@ -216,7 +216,7 @@ services:
         depends_on: [redis]
 
     polygon-healthWatcher:
-        image: tornadocash/relayer:sidechain-beta
+        image: tornadocash/relayer:sidechain-v5
         profiles: ["polygon"]
         restart: always
         command: healthWatcher
@@ -227,7 +227,7 @@ services:
         depends_on: [redis, polygon-server]
 
     polygon-worker1:
-        image: tornadocash/relayer:sidechain-beta
+        image: tornadocash/relayer:sidechain-v5
         profiles: ["polygon"]
         restart: always
         command: worker
@@ -242,7 +242,7 @@ services:
     # ---------------------- Gnosis (XDAI) ---------------------- #
 
     gnosis-server:
-        image: tornadocash/relayer:sidechain-beta
+        image: tornadocash/relayer:sidechain-v5
         profiles: ["gnosis"]
         restart: always
         command: server
@@ -254,7 +254,7 @@ services:
         depends_on: [redis]
 
     gnosis-healthWatcher:
-        image: tornadocash/relayer:sidechain-beta
+        image: tornadocash/relayer:sidechain-v5
         profiles: ["gnosis"]
         restart: always
         command: healthWatcher
@@ -265,7 +265,7 @@ services:
         depends_on: [redis, gnosis-server]
 
     gnosis-worker1:
-        image: tornadocash/relayer:sidechain-beta
+        image: tornadocash/relayer:sidechain-v5
         profiles: ["gnosis"]
         restart: always
         command: worker
@@ -280,7 +280,7 @@ services:
     # ---------------------- AVAX ---------------------- #
 
     avax-server:
-        image: tornadocash/relayer:sidechain-beta
+        image: tornadocash/relayer:sidechain-v5
         profiles: ["avax"]
         restart: always
         command: server
@@ -292,7 +292,7 @@ services:
         depends_on: [redis]
 
     avax-healthWatcher:
-        image: tornadocash/relayer:sidechain-beta
+        image: tornadocash/relayer:sidechain-v5
         profiles: ["avax"]
         restart: always
         command: healthWatcher
@@ -303,7 +303,7 @@ services:
         depends_on: [redis, avax-server]
 
     avax-worker1:
-        image: tornadocash/relayer:sidechain-beta
+        image: tornadocash/relayer:sidechain-v5
         profiles: ["avax"]
         restart: always
         command: worker
@@ -318,7 +318,7 @@ services:
     # ---------------------- OP ------------------------ #
 
     op-server:
-        image: tornadocash/relayer:sidechain-beta
+        image: tornadocash/relayer:sidechain-v5
         profiles: ["op"]
         restart: always
         command: server
@@ -330,7 +330,7 @@ services:
         depends_on: [redis]
 
     op-healthWatcher:
-        image: tornadocash/relayer:sidechain-beta
+        image: tornadocash/relayer:sidechain-v5
         profiles: ["op"]
         restart: always
         command: healthWatcher
@@ -341,7 +341,7 @@ services:
         depends_on: [redis, op-server]
 
     op-worker1:
-        image: tornadocash/relayer:sidechain-beta
+        image: tornadocash/relayer:sidechain-v5
         profiles: ["op"]
         restart: always
         command: worker
@@ -356,7 +356,7 @@ services:
     # ---------------------- Arbitrum ----------------------- #
 
     arb-server:
-        image: tornadocash/relayer:sidechain-beta
+        image: tornadocash/relayer:sidechain-v5
         profiles: ["arb"]
         restart: always
         command: server
@@ -368,7 +368,7 @@ services:
         depends_on: [redis]
 
     arb-healthWatcher:
-        image: tornadocash/relayer:sidechain-beta
+        image: tornadocash/relayer:sidechain-v5
         profiles: ["arb"]
         restart: always
         command: healthWatcher
@@ -379,7 +379,7 @@ services:
         depends_on: [redis, arb-server]
 
     arb-worker1:
-        image: tornadocash/relayer:sidechain-beta
+        image: tornadocash/relayer:sidechain-v5
         profiles: ["arb"]
         restart: always
         command: worker
@@ -394,7 +394,7 @@ services:
     # ---------------------- Goerli (Ethereum Testnet) ---------------------- #
 
     goerli-server:
-        image: tornadorelayer:mainnet
+        image: tornadocash/relayer:mainnet-v5
         profiles: ["geth"]
         restart: always
         command: server
@@ -406,7 +406,7 @@ services:
         depends_on: [redis]
 
     goerli-treeWatcher:
-        image: tornadorelayer:mainnet
+        image: tornadocash/relayer:mainnet-v5
         profiles: ["goerli"]
         restart: always
         command: treeWatcher
@@ -417,7 +417,7 @@ services:
         depends_on: [redis, goerli-server]
 
     goerli-priceWatcher:
-        image: tornadorelayer:mainnet
+        image: tornadocash/relayer:mainnet-v5
         profiles: ["goerli"]
         restart: always
         command: priceWatcher
@@ -428,7 +428,7 @@ services:
         depends_on: [redis, goerli-server]
 
     goerli-healthWatcher:
-        image: tornadorelayer:mainnet
+        image: tornadocash/relayer:mainnet-v5
         profiles: ["goerli"]
         restart: always
         command: healthWatcher
@@ -439,7 +439,7 @@ services:
         depends_on: [redis, goerli-server]
 
     goerli-worker1:
-        image: tornadorelayer:mainnet
+        image: tornadocash/relayer:mainnet-v5
         profiles: ["goerli"]
         restart: always
         command: worker
