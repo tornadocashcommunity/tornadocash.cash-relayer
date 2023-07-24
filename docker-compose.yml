@@ -1,13 +1,14 @@
 version: '2'
 
 services:
-
   redis:
     image: redis
     restart: always
-    command: [ redis-server, --appendonly, 'yes' ]
+    command: [redis-server, --appendonly, 'yes']
     volumes:
       - redis:/data
+    ports:
+      - '127.0.0.1:6379:6379'
 
   nginx:
     image: nginx:alpine
@@ -49,7 +50,7 @@ services:
   eth-server:
     build: .
     image: tornadorelayer:mainnet
-    profiles: [ 'eth' ]
+    profiles: ['eth']
     restart: always
     command: server
     env_file: .env.eth
@@ -57,51 +58,51 @@ services:
       NET_ID: 1
       REDIS_URL: redis://redis/0
       nginx_proxy_read_timeout: 600
-    depends_on: [ redis ]
+    depends_on: [redis]
 
   eth-treeWatcher:
     image: tornadorelayer:mainnet
-    profiles: [ 'eth' ]
+    profiles: ['eth']
     restart: always
     command: treeWatcher
     env_file: .env.eth
     environment:
       NET_ID: 1
       REDIS_URL: redis://redis/0
-    depends_on: [ redis, eth-server ]
+    depends_on: [redis, eth-server]
 
   eth-priceWatcher:
     image: tornadorelayer:mainnet
-    profiles: [ 'eth' ]
+    profiles: ['eth']
     restart: always
     command: priceWatcher
     env_file: .env.eth
     environment:
       NET_ID: 1
       REDIS_URL: redis://redis/0
-    depends_on: [ redis, eth-server ]
+    depends_on: [redis, eth-server]
 
   eth-healthWatcher:
     image: tornadorelayer:mainnet
-    profiles: [ 'eth' ]
+    profiles: ['eth']
     restart: always
     command: healthWatcher
     env_file: .env.eth
     environment:
       NET_ID: 1
       REDIS_URL: redis://redis/0
-    depends_on: [ redis, eth-server ]
+    depends_on: [redis, eth-server]
 
   eth-worker1:
     image: tornadorelayer:mainnet
-    profiles: [ 'eth' ]
+    profiles: ['eth']
     restart: always
     command: worker
     env_file: .env.eth
     environment:
       NET_ID: 1
       REDIS_URL: redis://redis/0
-    depends_on: [ redis, eth-server ]
+    depends_on: [redis, eth-server]
 
   # # This is additional worker for ethereum mainnet
   # # So you can process transactions from multiple addresses, but before it you need to set up those addresses as workers
@@ -168,7 +169,7 @@ services:
 
   bsc-server:
     image: tornadorelayer:sidechain
-    profiles: [ 'bsc' ]
+    profiles: ['bsc']
     restart: always
     command: server
     env_file: .env.bsc
@@ -176,29 +177,29 @@ services:
       NET_ID: 56
       REDIS_URL: redis://redis/1
       nginx_proxy_read_timeout: 600
-    depends_on: [ redis ]
+    depends_on: [redis]
 
   bsc-healthWatcher:
     image: tornadorelayer:sidechain
-    profiles: [ 'bsc' ]
+    profiles: ['bsc']
     restart: always
     command: healthWatcher
     env_file: .env.bsc
     environment:
       NET_ID: 56
       REDIS_URL: redis://redis/1
-    depends_on: [ redis, bsc-server ]
+    depends_on: [redis, bsc-server]
 
   bsc-worker1:
     image: tornadorelayer:sidechain
-    profiles: [ 'bsc' ]
+    profiles: ['bsc']
     restart: always
     command: worker
     env_file: .env.bsc
     environment:
       NET_ID: 56
       REDIS_URL: redis://redis/1
-    depends_on: [ redis, bsc-server ]
+    depends_on: [redis, bsc-server]
 
   # -------------------------------------------------- #
 
@@ -206,7 +207,7 @@ services:
 
   polygon-server:
     image: tornadorelayer:sidechain
-    profiles: [ 'polygon' ]
+    profiles: ['polygon']
     restart: always
     command: server
     env_file: .env.polygon
@@ -214,29 +215,29 @@ services:
       NET_ID: 137
       REDIS_URL: redis://redis/2
       nginx_proxy_read_timeout: 600
-    depends_on: [ redis ]
+    depends_on: [redis]
 
   polygon-healthWatcher:
     image: tornadorelayer:sidechain
-    profiles: [ 'polygon' ]
+    profiles: ['polygon']
     restart: always
     command: healthWatcher
     env_file: .env.polygon
     environment:
       NET_ID: 137
       REDIS_URL: redis://redis/2
-    depends_on: [ redis, polygon-server ]
+    depends_on: [redis, polygon-server]
 
   polygon-worker1:
     image: tornadorelayer:sidechain
-    profiles: [ 'polygon' ]
+    profiles: ['polygon']
     restart: always
     command: worker
     env_file: .env.polygon
     environment:
       NET_ID: 137
       REDIS_URL: redis://redis/2
-    depends_on: [ redis, polygon-server ]
+    depends_on: [redis, polygon-server]
 
   # -------------------------------------------------- #
 
@@ -244,7 +245,7 @@ services:
 
   gnosis-server:
     image: tornadorelayer:sidechain
-    profiles: [ 'gnosis' ]
+    profiles: ['gnosis']
     restart: always
     command: server
     env_file: .env.gnosis
@@ -252,29 +253,29 @@ services:
       NET_ID: 100
       REDIS_URL: redis://redis/3
       nginx_proxy_read_timeout: 600
-    depends_on: [ redis ]
+    depends_on: [redis]
 
   gnosis-healthWatcher:
     image: tornadorelayer:sidechain
-    profiles: [ 'gnosis' ]
+    profiles: ['gnosis']
     restart: always
     command: healthWatcher
     env_file: .env.gnosis
     environment:
       NET_ID: 100
       REDIS_URL: redis://redis/3
-    depends_on: [ redis, gnosis-server ]
+    depends_on: [redis, gnosis-server]
 
   gnosis-worker1:
     image: tornadorelayer:sidechain
-    profiles: [ 'gnosis' ]
+    profiles: ['gnosis']
     restart: always
     command: worker
     env_file: .env.gnosis
     environment:
       NET_ID: 100
       REDIS_URL: redis://redis/3
-    depends_on: [ redis, gnosis-server ]
+    depends_on: [redis, gnosis-server]
 
   # -------------------------------------------------- #
 
@@ -282,7 +283,7 @@ services:
 
   avax-server:
     image: tornadorelayer:sidechain
-    profiles: [ 'avax' ]
+    profiles: ['avax']
     restart: always
     command: server
     env_file: .env.avax
@@ -290,29 +291,29 @@ services:
       NET_ID: 43114
       REDIS_URL: redis://redis/4
       nginx_proxy_read_timeout: 600
-    depends_on: [ redis ]
+    depends_on: [redis]
 
   avax-healthWatcher:
     image: tornadorelayer:sidechain
-    profiles: [ 'avax' ]
+    profiles: ['avax']
     restart: always
     command: healthWatcher
     env_file: .env.avax
     environment:
       NET_ID: 43114
       REDIS_URL: redis://redis/4
-    depends_on: [ redis, avax-server ]
+    depends_on: [redis, avax-server]
 
   avax-worker1:
     image: tornadorelayer:sidechain
-    profiles: [ 'avax' ]
+    profiles: ['avax']
     restart: always
     command: worker
     env_file: .env.avax
     environment:
       NET_ID: 43114
       REDIS_URL: redis://redis/4
-    depends_on: [ redis, avax-server ]
+    depends_on: [redis, avax-server]
 
   # -------------------------------------------------- #
 
@@ -320,7 +321,7 @@ services:
 
   op-server:
     image: tornadorelayer:sidechain
-    profiles: [ 'op' ]
+    profiles: ['op']
     restart: always
     command: server
     env_file: .env.op
@@ -328,29 +329,29 @@ services:
       NET_ID: 10
       REDIS_URL: redis://redis/5
       nginx_proxy_read_timeout: 600
-    depends_on: [ redis ]
+    depends_on: [redis]
 
   op-healthWatcher:
     image: tornadorelayer:sidechain
-    profiles: [ 'op' ]
+    profiles: ['op']
     restart: always
     command: healthWatcher
     env_file: .env.op
     environment:
       NET_ID: 10
       REDIS_URL: redis://redis/5
-    depends_on: [ redis, op-server ]
+    depends_on: [redis, op-server]
 
   op-worker1:
     image: tornadorelayer:sidechain
-    profiles: [ 'op' ]
+    profiles: ['op']
     restart: always
     command: worker
     env_file: .env.op
     environment:
       NET_ID: 10
       REDIS_URL: redis://redis/5
-    depends_on: [ redis, op-server ]
+    depends_on: [redis, op-server]
 
   # -------------------------------------------------- #
 
@@ -358,7 +359,7 @@ services:
 
   arb-server:
     image: tornadorelayer:sidechain
-    profiles: [ 'arb' ]
+    profiles: ['arb']
     restart: always
     command: server
     env_file: .env.arb
@@ -366,29 +367,29 @@ services:
       NET_ID: 42161
       REDIS_URL: redis://redis/6
       nginx_proxy_read_timeout: 600
-    depends_on: [ redis ]
+    depends_on: [redis]
 
   arb-healthWatcher:
     image: tornadorelayer:sidechain
-    profiles: [ 'arb' ]
+    profiles: ['arb']
     restart: always
     command: healthWatcher
     env_file: .env.arb
     environment:
       NET_ID: 42161
       REDIS_URL: redis://redis/6
-    depends_on: [ redis, arb-server ]
+    depends_on: [redis, arb-server]
 
   arb-worker1:
     image: tornadorelayer:sidechain
-    profiles: [ 'arb' ]
+    profiles: ['arb']
     restart: always
     command: worker
     env_file: .env.arb
     environment:
       NET_ID: 42161
       REDIS_URL: redis://redis/6
-    depends_on: [ redis, arb-server ]
+    depends_on: [redis, arb-server]
 
   # -------------------------------------------------- #
 
@@ -396,7 +397,7 @@ services:
 
   goerli-server:
     image: tornadorelayer:mainnet
-    profiles: [ 'geth' ]
+    profiles: ['geth']
     restart: always
     command: server
     env_file: .env.goerli
@@ -404,51 +405,51 @@ services:
       NET_ID: 5
       REDIS_URL: redis://redis/7
       nginx_proxy_read_timeout: 600
-    depends_on: [ redis ]
+    depends_on: [redis]
 
   goerli-treeWatcher:
     image: tornadorelayer:mainnet
-    profiles: [ 'goerli' ]
+    profiles: ['goerli']
     restart: always
     command: treeWatcher
     env_file: .env.goerli
     environment:
       NET_ID: 5
       REDIS_URL: redis://redis/7
-    depends_on: [ redis, goerli-server ]
+    depends_on: [redis, goerli-server]
 
   goerli-priceWatcher:
     image: tornadorelayer:mainnet
-    profiles: [ 'goerli' ]
+    profiles: ['goerli']
     restart: always
     command: priceWatcher
     env_file: .env.goerli
     environment:
       NET_ID: 5
       REDIS_URL: redis://redis/7
-    depends_on: [ redis, goerli-server ]
+    depends_on: [redis, goerli-server]
 
   goerli-healthWatcher:
     image: tornadorelayer:mainnet
-    profiles: [ 'goerli' ]
+    profiles: ['goerli']
     restart: always
     command: healthWatcher
     env_file: .env.goerli
     environment:
       NET_ID: 5
       REDIS_URL: redis://redis/7
-    depends_on: [ redis, goerli-server ]
+    depends_on: [redis, goerli-server]
 
   goerli-worker1:
     image: tornadorelayer:mainnet
-    profiles: [ 'goerli' ]
+    profiles: ['goerli']
     restart: always
     command: worker
     env_file: .env.goerli
     environment:
       NET_ID: 5
       REDIS_URL: redis://redis/7
-    depends_on: [ redis, goerli-server ]
+    depends_on: [redis, goerli-server]
   # -------------------------------------------------- #
 
 volumes:
