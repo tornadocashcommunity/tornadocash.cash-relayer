@@ -1,4 +1,4 @@
-FROM node:16-alpine as dev
+FROM node:20-alpine as dev
 
 ENV NODE_ENV=development
 
@@ -12,7 +12,7 @@ COPY . ./
 
 RUN yarn build
 
-FROM node:16-alpine as prod
+FROM node:20-alpine as prod
 ENV NODE_ENV=production
 
 WORKDIR /app

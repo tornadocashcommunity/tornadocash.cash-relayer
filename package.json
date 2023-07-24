@@ -38,7 +38,7 @@
     "json-schema-to-ts": "^2.2.0",
     "node-fetch": "2",
     "reflect-metadata": "^0.1.13",
-    "telegraf": "^4.8.2",
+    "telegraf": "^4.12.3-canary.1",
     "torn-token": "^1.0.8",
     "tsyringe": "^4.8.0",
     "tx-manager": "^0.4.9",

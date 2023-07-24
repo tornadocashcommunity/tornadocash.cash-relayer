@@ -50,7 +50,7 @@ function install_node(){
   . ~/.nvm/nvm.sh;
   . ~/.profile;
   . ~/.bashrc;
-  nvm install 14.21.3;
+  nvm install 20.3.0;
 }
 
 function install_relayer_repo(){
