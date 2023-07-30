@@ -18,7 +18,7 @@ module.exports = {
   privateKey: process.env.PRIVATE_KEY,
   instances,
   port: process.env.APP_PORT || 8000,
-  tornadoServiceFee: Number(process.env.REGULAR_TORNADO_WITHDRAW_FEE),
+  tornadoServiceFee: Number(process.env.RELAYER_FEE),
   rewardAccount: process.env.REWARD_ACCOUNT,
   gasPrices,
   gasLimits: {
