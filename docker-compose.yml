@@ -7,6 +7,8 @@ services:
     command: [redis-server, --appendonly, 'yes']
     volumes:
       - redis:/data
+    ports:
+      - '127.0.0.1:6379:6379'
 
   nginx:
     image: nginx:alpine
@@ -121,3 +123,10 @@ services:
   #        -----BEGIN RSA PRIVATE KEY-----
   #        ...
   #        -----END RSA PRIVATE KEY-----
+
+volumes:
+  conf:
+  vhost:
+  html:
+  certs:
+  redis:
