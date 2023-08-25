@@ -1,6 +1,6 @@
 {
   "name": "relay",
-  "version": "4.1.4",
+  "version": "4.1.5",
   "description": "Relayer for Tornado.cash privacy solution. https://tornado.cash",
   "scripts": {
     "server": "node src/server.js",
@@ -19,16 +19,16 @@
   "author": "tornado.cash",
   "license": "MIT",
   "dependencies": {
+    "@tornado/circomlib": "^0.0.21",
+    "@tornado/tornado-oracles": "1.2.2",
     "ajv": "^6.12.5",
     "async-mutex": "^0.2.4",
     "bull": "^3.12.1",
-    "circomlib": "git+https://github.com/tornadocash/circomlib.git#3b492f9801573eebcfe1b6c584afe8a3beecf2b4",
     "concurrently": "^8.2.0",
     "dotenv": "^8.2.0",
     "eth-ens-namehash": "^2.0.8",
     "express": "^4.17.1",
     "fixed-merkle-tree": "^0.4.0",
-    "gas-price-oracle": "^0.4.7",
     "ioredis": "^4.14.1",
     "node-fetch": "^2.6.7",
     "torn-token": "1.0.6",

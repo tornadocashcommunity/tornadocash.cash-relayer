@@ -1,14 +1,6 @@
 const { instances, netId } = require('./config')
-const { poseidon } = require('circomlib')
+const { poseidon } = require('@tornado/circomlib')
 const { toBN, toChecksumAddress, BN, fromWei, isAddress, toWei } = require('web3-utils')
-
-const TOKENS = {
-  torn: {
-    tokenAddress: '0x77777FeDdddFfC19Ff86DB637967013e6C6A116C',
-    symbol: 'TORN',
-    decimals: 18,
-  },
-}
 
 const addressMap = new Map()
 const instance = instances[`netId${netId}`]
@@ -59,24 +51,6 @@ function when(source, event) {
         reject(error)
       })
   })
-}
-
-function getArgsForOracle() {
-  const tokens = {
-    ...instances.netId1,
-    ...TOKENS,
-  }
-  const tokenAddresses = []
-  const oneUintAmount = []
-  const currencyLookup = {}
-  Object.entries(tokens).map(([currency, data]) => {
-    if (currency !== 'eth') {
-      tokenAddresses.push(data.tokenAddress)
-      oneUintAmount.push(toBN('10').pow(toBN(data.decimals.toString())).toString())
-      currencyLookup[data.tokenAddress] = currency
-    }
-  })
-  return { tokenAddresses, oneUintAmount, currencyLookup }
 }
 
 function fromDecimals(value, decimals) {
@@ -155,7 +129,6 @@ module.exports = {
   poseidonHash2,
   sleep,
   when,
-  getArgsForOracle,
   fromDecimals,
   toBN,
   toChecksumAddress,

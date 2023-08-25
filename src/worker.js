@@ -1,6 +1,6 @@
 const fs = require('fs')
 const MerkleTree = require('fixed-merkle-tree')
-const { GasPriceOracle } = require('gas-price-oracle')
+const { TornadoFeeOracleV4, bump } = require('@tornado/tornado-oracles')
 const { Utils, Controller } = require('tornado-anonymity-mining')
 
 const swapABI = require('../abis/swap.abi.json')
@@ -46,7 +46,7 @@ let txManager
 let controller
 let swap
 let minerContract
-const gasPriceOracle = new GasPriceOracle({ defaultRpc: oracleRpcUrl })
+const feeOracle = new TornadoFeeOracleV4(netId, oracleRpcUrl)
 
 async function fetchTree() {
   const elements = await redis.get('tree:elements')
@@ -118,51 +118,22 @@ function checkFee({ data }) {
   return checkMiningFee(data)
 }
 
-async function getGasPrice() {
-  const block = await web3.eth.getBlock('latest')
-
-  if (block && block.baseFeePerGas) {
-    return toBN(block.baseFeePerGas)
-  }
-
-  const { fast } = await gasPriceOracle.gasPrices()
-  return toBN(toWei(fast.toString(), 'gwei'))
-}
-
 async function checkTornadoFee({ args, contract }) {
   const { currency, amount, decimals } = getInstance(contract)
-  const [fee, refund] = [args[4], args[5]].map(toBN)
-  const gasPrice = await getGasPrice()
+  const [userProvidedFee, refund] = [args[4], args[5]]
 
   const ethPrice = await redis.hget('prices', currency)
-  const expense = gasPrice.mul(toBN(gasLimits[jobType.TORNADO_WITHDRAW]))
-
-  const feePercent = toBN(fromDecimals(amount, decimals))
-    .mul(toBN(parseInt(tornadoServiceFee * 1e10)))
-    .div(toBN(1e10 * 100))
-
-  let desiredFee
-  switch (currency) {
-    case 'eth': {
-      desiredFee = expense.add(feePercent)
-      break
-    }
-    default: {
-      desiredFee = expense
-        .add(refund)
-        .mul(toBN(10 ** decimals))
-        .div(toBN(ethPrice))
-      desiredFee = desiredFee.add(feePercent)
-      break
-    }
-  }
-  console.log(
-    'sent fee, desired fee, feePercent',
-    fromWei(fee.toString()),
-    fromWei(desiredFee.toString()),
-    fromWei(feePercent.toString()),
+  const relayerEstimatedFee = await feeOracle.calculateWithdrawalFeeViaRelayer(
+    'relayer_withdrawal_check_v4',
+    {},
+    tornadoServiceFee,
+    currency,
+    amount,
+    decimals,
+    refund,
+    ethPrice,
   )
-  if (fee.lt(desiredFee)) {
+  if (toBN(relayerEstimatedFee).gt(toBN(userProvidedFee))) {
     throw new RelayerError(
       'Provided fee is not enough. Probably it is a Gas Price spike, try to resubmit.',
       0,
@@ -171,12 +142,12 @@ async function checkTornadoFee({ args, contract }) {
 }
 
 async function checkMiningFee({ args }) {
-  const gasPrice = await getGasPrice()
+  const gasPrice = await feeOracle.getGasPriceInHex()
   const ethPrice = await redis.hget('prices', 'torn')
   const isMiningReward = currentJob.data.type === jobType.MINING_REWARD
   const providedFee = isMiningReward ? toBN(args.fee) : toBN(args.extData.fee)
 
-  const expense = gasPrice.mul(toBN(gasLimits[currentJob.data.type]))
+  const expense = toBN(gasPrice).mul(toBN(gasLimits[currentJob.data.type]))
   const expenseInTorn = expense.mul(toBN(1e18)).div(toBN(ethPrice))
   // todo make aggregator for ethPrices and rewardSwap data
   const balance = await swap.methods.tornVirtualBalance().call()
@@ -233,12 +204,17 @@ async function getTxObject({ data }) {
       calldata = contract.methods.withdraw(data.proof, ...data.args).encodeABI()
     }
 
-    return {
+    const incompleteTx = {
       value: data.args[5],
       to: contract._address,
       data: calldata,
-      gasLimit: gasLimits['WITHDRAW_WITH_EXTRA'],
     }
+    const [gasPrice, gasLimit] = await Promise.all([
+      feeOracle.getGasPrice('relayer_withdrawal'),
+      feeOracle.getGasLimit(incompleteTx, 'relayer_withdrawal'),
+    ])
+
+    return Object.assign({ gasLimit, gasPrice }, incompleteTx)
   } else {
     const method = data.type === jobType.MINING_REWARD ? 'reward' : 'withdraw'
     const calldata = minerContract.methods[method](data.proof, data.args).encodeABI()
