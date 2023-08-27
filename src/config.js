@@ -21,11 +21,6 @@ module.exports = {
   tornadoServiceFee: Number(process.env.RELAYER_FEE),
   rewardAccount: process.env.REWARD_ACCOUNT,
   gasPrices,
-  gasLimits: {
-    [jobType.TORNADO_WITHDRAW]: 390000,
-    [jobType.OP_TORNADO_WITHDRAW]: 440000,
-    [jobType.ARB_TORNADO_WITHDRAW]: 1900000,
-  },
   proxyLight,
   nativeCurrency,
   minimumBalance: netId === 137 || netId === 43114 ? '10000000000000000000' : '100000000000000000', // 10 or 0.1
