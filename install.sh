@@ -57,7 +57,7 @@ function install_node(){
 
 function install_repositories(){
     git clone $relayer_soft_git_repo -b main-v5 $relayer_folder
-    git clone $relayer_soft_git_repo -b mainnet-v5 $relayer_mainnet_soft_source_folder;
+    git clone $relayer_soft_git_repo -b mainnet-v4 $relayer_mainnet_soft_source_folder;
     git clone $relayer_soft_git_repo -b sidechain-v5 $relayer_sidechains_soft_source_folder;
 }
 

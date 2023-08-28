@@ -47,7 +47,7 @@ services:
 
     eth-server:
         build: .
-        image: tornadocash/relayer:mainnet-v5
+        image: tornadocash/relayer:mainnet-v4
         profiles: ["eth"]
         restart: always
         command: server
@@ -59,7 +59,7 @@ services:
         depends_on: [redis]
 
     eth-treeWatcher:
-        image: tornadocash/relayer:mainnet-v5
+        image: tornadocash/relayer:mainnet-v4
         profiles: ["eth"]
         restart: always
         command: treeWatcher
@@ -70,7 +70,7 @@ services:
         depends_on: [redis, eth-server]
 
     eth-priceWatcher:
-        image: tornadocash/relayer:mainnet-v5
+        image: tornadocash/relayer:mainnet-v4
         profiles: ["eth"]
         restart: always
         command: priceWatcher
@@ -81,7 +81,7 @@ services:
         depends_on: [redis, eth-server]
 
     eth-healthWatcher:
-        image: tornadocash/relayer:mainnet-v5
+        image: tornadocash/relayer:mainnet-v4
         profiles: ["eth"]
         restart: always
         command: healthWatcher
@@ -92,7 +92,7 @@ services:
         depends_on: [redis, eth-server]
 
     eth-worker1:
-        image: tornadocash/relayer:mainnet-v5
+        image: tornadocash/relayer:mainnet-v4
         profiles: ["eth"]
         restart: always
         command: worker
@@ -105,7 +105,7 @@ services:
     # # This is additional worker for ethereum mainnet
     # # So you can process transactions from multiple addresses, but before it you need to set up those addresses as workers
     #  eth-worker2:
-    #    image: tornadocash/relayer:mainnet-v5
+    #    image: tornadocash/relayer:mainnet-v4
     #    profiles: [ 'eth' ]
     #    restart: always
     #    command: worker
@@ -394,7 +394,7 @@ services:
     # ---------------------- Goerli (Ethereum Testnet) ---------------------- #
 
     goerli-server:
-        image: tornadocash/relayer:mainnet-v5
+        image: tornadocash/relayer:mainnet-v4
         profiles: ["geth"]
         restart: always
         command: server
@@ -406,7 +406,7 @@ services:
         depends_on: [redis]
 
     goerli-treeWatcher:
-        image: tornadocash/relayer:mainnet-v5
+        image: tornadocash/relayer:mainnet-v4
         profiles: ["goerli"]
         restart: always
         command: treeWatcher
@@ -417,7 +417,7 @@ services:
         depends_on: [redis, goerli-server]
 
     goerli-priceWatcher:
-        image: tornadocash/relayer:mainnet-v5
+        image: tornadocash/relayer:mainnet-v4
         profiles: ["goerli"]
         restart: always
         command: priceWatcher
@@ -428,7 +428,7 @@ services:
         depends_on: [redis, goerli-server]
 
     goerli-healthWatcher:
-        image: tornadocash/relayer:mainnet-v5
+        image: tornadocash/relayer:mainnet-v4
         profiles: ["goerli"]
         restart: always
         command: healthWatcher
@@ -439,7 +439,7 @@ services:
         depends_on: [redis, goerli-server]
 
     goerli-worker1:
-        image: tornadocash/relayer:mainnet-v5
+        image: tornadocash/relayer:mainnet-v4
         profiles: ["goerli"]
         restart: always
         command: worker

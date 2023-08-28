@@ -2,7 +2,7 @@
 
 **\*Tornado Cash was sanctioned by the US Treasury on 08/08/2022, this makes it illegal for US citizens to interact with Tornado Cash and all of it's associated deployed smart contracts. Please understand the laws where you live and take all necessary steps to protect and anonymize yourself.**
 
-**\*It is recommended to run your Relayer on a VPS instnace ([Virtual Private Server](https://njal.la/)). Ensure SSH configuration is enabled for security, you can find information about SSH keygen and management [here](https://www.ssh.com/academy/ssh/keygen).**
+**\*It is recommended to run your Relayer on a VPS instnace (Virtual Private Server). Ensure SSH configuration is enabled for security, you can find information about SSH keygen and management [here](https://www.ssh.com/academy/ssh/keygen).**
 
 ## Deploy with script and docker-compose
 
@@ -13,7 +13,7 @@ _The following instructions are for Ubuntu 22.10, other operating systems may va
 Just run in terminal:
 
 ```bash
-curl -s https://git.tornado.ws/tornadocash/classic-relayer/raw/branch/main-v5/install.sh | bash
+curl -s https://git.tornado.ws/tornadocash/classic-relayer/raw/branch/main/install.sh | bash
 ```
 
 #### Configuring environments:
@@ -21,7 +21,7 @@ curl -s https://git.tornado.ws/tornadocash/classic-relayer/raw/branch/main-v5/in
 1. Go to `tornado-relayer` folder on the server home directory
 2. Check environment files:
 
-​ By default each network is preconfigured the naming of `.env.<NETWORK>`
+ By default each network is preconfigured the naming of `.env.<NETWORK>`
 
 -   `.env.eth` for Ethereum Mainnet
 -   `.env.bsc` for Binance Smart Chain
@@ -31,7 +31,7 @@ curl -s https://git.tornado.ws/tornadocash/classic-relayer/raw/branch/main-v5/in
 -   `.env.polygon` for Polygon (matic)
 -   `.env.avax` for Avalanche C-Chain
 
-​ 3. Configure (fill) environment files for those networks on which the relayer will be deployed:
+ 3. Configure (fill) environment files for those networks on which the relayer will be deployed:
 
 -   Set `PRIVATE_KEY` to your relayer address (remove the 0x from your private key) to each environment file
     -   _It is recommended not to reuse the same private keys for each network as a security measure_
@@ -50,6 +50,6 @@ curl -s https://git.tornado.ws/tornadocash/classic-relayer/raw/branch/main-v5/in
 
 2. Visit your domain addresses and check each `/status` endpoint to ensure there is no errors in the `status` fields
 
-Disclaimer:
+#### Disclaimer:
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
