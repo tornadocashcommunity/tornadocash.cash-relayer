@@ -1,7 +1,7 @@
 {
   "name": "relay",
-  "version": "5.0.0-beta.12",
-  "description": "Relayer for Tornado.cash privacy solution. https://tornado.cash",
+  "version": "5.0.0-beta.13",
+  "description": "Relayer for Tornado.cash privacy solution.",
   "scripts": {
     "server": "node src/server.js",
     "worker": "node src/worker",
@@ -12,17 +12,17 @@
     "lint": "yarn eslint && yarn prettier:check",
     "test": "mocha",
     "build": "docker build -t tornadocash/relayer:sidechain-beta .",
-    "start": "concurrently \"yarn server\" \"yarn worker\" \"yarn healthWatcher\""
+    "start": "docker-compose up -d redis && concurrently \"yarn server\" \"yarn worker\" \"yarn healthWatcher\""
   },
-  "author": "tornado.cash",
+  "author": "Tornado Cash Team",
   "license": "MIT",
   "dependencies": {
+    "@tornado/tornado-oracles": "^2.1.0",
     "ajv": "^6.12.5",
     "bull": "^3.12.1",
     "concurrently": "^8.2.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "gas-price-oracle": "^0.4.7",
     "ioredis": "^4.14.1",
     "torn-token": "^1.0.5",
     "tx-manager": "^0.4.8",

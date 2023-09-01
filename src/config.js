@@ -13,7 +13,7 @@ module.exports = {
   netId,
   redisUrl: process.env.REDIS_URL || 'redis://127.0.0.1:6379',
   httpRpcUrl: process.env.HTTP_RPC_URL,
-  oracleRpcUrl: process.env.ORACLE_RPC_URL || 'https://mainnet.infura.io/',
+  oracleRpcUrl: process.env.ORACLE_RPC_URL || 'https://api.securerpc.com/v1',
   minerMerkleTreeHeight: 20,
   privateKey: process.env.PRIVATE_KEY,
   instances,
@@ -21,11 +21,6 @@ module.exports = {
   tornadoServiceFee: Number(process.env.REGULAR_TORNADO_WITHDRAW_FEE),
   rewardAccount: process.env.REWARD_ACCOUNT,
   gasPrices,
-  gasLimits: {
-    [jobType.TORNADO_WITHDRAW]: 390000,
-    [jobType.OP_TORNADO_WITHDRAW]: 440000,
-    [jobType.ARB_TORNADO_WITHDRAW]: 1900000,
-  },
   proxyLight,
   nativeCurrency,
   minimumBalance: '500000000000000000', // 0.5

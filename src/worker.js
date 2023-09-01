@@ -1,30 +1,20 @@
 const Web3 = require('web3')
-const { GasPriceOracle } = require('gas-price-oracle')
-const { serialize } = require('@ethersproject/transactions')
-const { toBN, toWei, fromWei, toHex } = require('web3-utils')
+const { TornadoFeeOracleV4 } = require('@tornado/tornado-oracles')
+const { toBN, fromWei } = require('web3-utils')
 const { redis } = require('./modules/redis')
 const proxyLightABI = require('../abis/proxyLightABI.json')
-const ovmGasPriceOracleABI = require('../abis/ovmGasPriceOracleABI.json')
 const { queue } = require('./queue')
-const { getInstance, fromDecimals, logRelayerError, clearRelayerErrors } = require('./utils')
+const { getInstance, logRelayerError, clearRelayerErrors } = require('./utils')
 const { jobType, status } = require('./constants')
-const {
-  netId,
-  gasPrices,
-  gasLimits,
-  privateKey,
-  proxyLight,
-  httpRpcUrl,
-  tornadoServiceFee,
-} = require('./config')
+const { netId, privateKey, gasPrices, proxyLight, httpRpcUrl, tornadoServiceFee } = require('./config')
 const { TxManager } = require('tx-manager')
 
 let web3
 let currentTx
 let currentJob
 let txManager
-let gasPriceOracle
 let tornadoProxyInstance
+const feeOracle = new TornadoFeeOracleV4(netId, httpRpcUrl)
 
 function start() {
   try {
@@ -32,13 +22,12 @@ function start() {
     tornadoProxyInstance = new web3.eth.Contract(proxyLightABI, proxyLight)
     clearRelayerErrors(redis)
     const { CONFIRMATIONS, MAX_GAS_PRICE } = process.env
+
     const gasPriceOracleConfig = {
       chainId: netId,
       defaultRpc: httpRpcUrl,
       defaultFallbackGasPrices: gasPrices,
     }
-
-    gasPriceOracle = new GasPriceOracle(gasPriceOracleConfig)
 
     txManager = new TxManager({
       privateKey,
@@ -55,77 +44,25 @@ function start() {
   }
 }
 
-function getGasPrices() {
-  return gasPriceOracle.gasPrices()
-}
-
-function getGasLimit() {
-  let action
-
-  switch (Number(netId)) {
-    case 10:
-      action = jobType.OP_TORNADO_WITHDRAW
-      break
-    case 42161:
-      action = jobType.ARB_TORNADO_WITHDRAW
-      break
-    default:
-      action = jobType.TORNADO_WITHDRAW
-  }
-
-  return gasLimits[action]
-}
-
-async function getL1Fee({ data, gasPrice }) {
-  const { address } = web3.eth.accounts.privateKeyToAccount(privateKey)
-  const nonce = await web3.eth.getTransactionCount(address)
-
-  const ovmGasPriceOracleContract = '0x420000000000000000000000000000000000000F'
-  const oracleInstance = new web3.eth.Contract(ovmGasPriceOracleABI, ovmGasPriceOracleContract)
-
-  const calldata = tornadoProxyInstance.methods.withdraw(data.contract, data.proof, ...data.args).encodeABI()
-
-  const tx = serialize({
-    nonce,
-    type: 0,
-    data: calldata,
-    chainId: netId,
-    value: data.args[5],
-    to: tornadoProxyInstance._address,
-    gasLimit: getGasLimit(),
-    gasPrice: toHex(gasPrice),
-  })
-
-  const l1Fee = await oracleInstance.methods.getL1Fee(tx).call()
-
-  return l1Fee
-}
-
 async function checkTornadoFee({ data }) {
   const fee = toBN(data.args[4])
-  const { amount, decimals } = getInstance(data.contract)
+  const { amount, decimals, currency } = getInstance(data.contract)
 
-  const { fast } = await getGasPrices()
-  const gasPrice = toWei(fast.toString(), 'gwei')
-
-  let expense = toBN(gasPrice).mul(toBN(getGasLimit()))
-  if (netId === 10) {
-    const l1Fee = await getL1Fee({ data, gasPrice })
-    expense = expense.add(toBN(l1Fee))
-  }
-
-  const feePercent = toBN(fromDecimals(amount, decimals))
-    .mul(toBN(parseInt(tornadoServiceFee * 1e10)))
-    .div(toBN(1e10 * 100))
-  const desiredFee = expense.add(feePercent)
+  const relayerEstimatedFee = await feeOracle.calculateWithdrawalFeeViaRelayer(
+    'relayer_withdrawal_check_v4',
+    {},
+    tornadoServiceFee,
+    currency,
+    amount,
+    decimals,
+  )
 
   console.log(
-    'sent fee, desired fee, feePercent',
+    'user-provided fee, desired fee',
     fromWei(fee.toString()),
-    fromWei(desiredFee.toString()),
-    fromWei(feePercent.toString()),
+    fromWei(toBN(relayerEstimatedFee).toString()),
   )
-  if (fee.lt(desiredFee)) {
+  if (fee.lt(toBN(relayerEstimatedFee))) {
     throw new Error('Provided fee is not enough. Probably it is a Gas Price spike, try to resubmit.')
   }
 }
@@ -133,14 +70,14 @@ async function checkTornadoFee({ data }) {
 async function getTxObject({ data }) {
   const calldata = tornadoProxyInstance.methods.withdraw(data.contract, data.proof, ...data.args).encodeABI()
 
-  const { fast } = await getGasPrices()
+  const { gasLimit, gasPrice } = await feeOracle.getGasParams(undefined, 'relayer_withdrawal')
 
   return {
     value: data.args[5],
     to: tornadoProxyInstance._address,
     data: calldata,
-    gasLimit: getGasLimit(),
-    gasPrice: toHex(toWei(fast.toString(), 'gwei')),
+    gasLimit,
+    gasPrice,
   }
 }
 
