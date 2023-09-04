@@ -50,6 +50,8 @@ curl -s https://git.tornado.ws/tornadocash/classic-relayer/raw/branch/main/insta
 
 2. Visit your domain addresses and check each `/status` endpoint to ensure there is no errors in the `status` fields
 
+If you want to change some relayer parameters, for example, RPC url or fee percent, stop the relayer software with command `docker-compose down --remove-orphans`, change in corresponding `.env.{chain}` file what you need and rerun relayer as described above.
+
 #### Disclaimer:
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
