@@ -50,14 +50,16 @@ async function checkTornadoFee({ data }, tx) {
   const userProvidedFee = toBN(data.args[4])
   const { amount, decimals, currency } = getInstance(data.contract)
 
-  const relayerDesiredFee = await feeOracle.calculateWithdrawalFeeViaRelayer(
-    'relayer_withdrawal',
+  const relayerDesiredFee = await feeOracle.calculateWithdrawalFeeViaRelayer({
     tx,
-    tornadoServiceFee,
+    txType: 'relayer_withdrawal',
+    relayerFeePercent: tornadoServiceFee,
     currency,
     amount,
     decimals,
-  )
+    gasLimit: tx.gasLimit,
+    gasPrice: tx.gasPrice,
+  })
 
   console.log(
     'user-provided fee, desired fee',
@@ -77,9 +79,12 @@ async function getTxObject({ data }) {
     to: tornadoProxyInstance._address,
     data: calldata,
   }
-  const { gasLimit, gasPrice } = await feeOracle.getGasParams(incompleteTx, 'relayer_withdrawal')
+  const { gasLimit, gasPrice } = await feeOracle.getGasParams({
+    tx: incompleteTx,
+    txType: 'relayer_withdrawal',
+  })
 
-  return Object.assign(incompleteTx, { gasLimit, gasPrice })
+  return { ...incompleteTx, gasLimit, gasPrice }
 }
 
 async function processJob(job) {

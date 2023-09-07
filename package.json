@@ -1,6 +1,6 @@
 {
   "name": "relay",
-  "version": "5.2.0",
+  "version": "5.2.1",
   "description": "Relayer for Tornado.cash privacy solution. https://tornado.cash",
   "scripts": {
     "server": "node src/server.js",
@@ -17,7 +17,7 @@
   "author": "tornado.cash",
   "license": "MIT",
   "dependencies": {
-    "@tornado/tornado-oracles": "^2.1.0",
+    "@tornado/tornado-oracles": "^3.3.0",
     "ajv": "^6.12.5",
     "bull": "^3.12.1",
     "concurrently": "^8.2.0",
