@@ -1,4 +1,4 @@
-# Relayer for Tornado Cash [![Build Status](https://github.com/tornadocash/relayer/workflows/build/badge.svg)](https://github.com/tornadocash/relayer/actions)![Static Badge](https://img.shields.io/badge/version-5.1.0-blue?logo=docker)
+# Relayer for Tornado Cash [![Build Status](https://github.com/tornadocash/relayer/workflows/build/badge.svg)](https://github.com/tornadocash/relayer/actions)![Sidechains version](https://img.shields.io/badge/version-5.2.1-blue?logo=docker)![Mainnet version](https://img.shields.io/badge/version-4.1.5-blue?logo=docker)
 
 **\*Tornado Cash was sanctioned by the US Treasury on 08/08/2022, this makes it illegal for US citizens to interact with Tornado Cash and all of it's associated deployed smart contracts. Please understand the laws where you live and take all necessary steps to protect and anonymize yourself.**
 
@@ -21,7 +21,7 @@ curl -s https://git.tornado.ws/tornadocash/classic-relayer/raw/branch/main/insta
 1. Go to `tornado-relayer` folder on the server home directory
 2. Check environment files:
 
- By default each network is preconfigured the naming of `.env.<NETWORK>`
+By default each network is preconfigured the naming of `.env.<NETWORK>`
 
 -   `.env.eth` for Ethereum Mainnet
 -   `.env.bsc` for Binance Smart Chain
@@ -31,7 +31,7 @@ curl -s https://git.tornado.ws/tornadocash/classic-relayer/raw/branch/main/insta
 -   `.env.polygon` for Polygon (matic)
 -   `.env.avax` for Avalanche C-Chain
 
- 3. Configure (fill) environment files for those networks on which the relayer will be deployed:
+3.  Configure (fill) environment files for those networks on which the relayer will be deployed:
 
 -   Set `PRIVATE_KEY` to your relayer address (remove the 0x from your private key) to each environment file
     -   _It is recommended not to reuse the same private keys for each network as a security measure_
