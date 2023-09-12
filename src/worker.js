@@ -10,7 +10,6 @@ const { queue } = require('./queue')
 const {
   poseidonHash2,
   getInstance,
-  fromDecimals,
   sleep,
   toBN,
   toWei,
@@ -119,39 +118,31 @@ function checkFee({ data }, gasInfo) {
   return checkMiningFee(data)
 }
 
-async function checkTornadoFee({ args, contract }, { gasLimit, gasPrice }) {
+async function checkTornadoFee({ args, contract }, tx) {
   const { currency, amount, decimals } = getInstance(contract)
-  const [fee, refund] = [args[4], args[5]].map(toBN)
+  const [userProvidedFee, refund] = [args[4], args[5]].map(toBN)
+  const { gasLimit, gasPrice } = tx
 
   const ethPrice = await redis.hget('prices', currency)
-  const expense = toBN(gasPrice).mul(toBN(gasLimit))
+  const totalWithdrawalFee = await feeOracle.calculateWithdrawalFeeViaRelayer({
+    tx,
+    txType: 'relayer_withdrawal',
+    amount,
+    currency,
+    decimals,
+    refundInEth: refund.toString(),
+    predefinedGasLimit: gasLimit,
+    predefinedGasPrice: gasPrice,
+    tokenPriceInEth: ethPrice,
+    relayerFeePercent: tornadoServiceFee,
+  })
 
-  const feePercent = toBN(fromDecimals(amount, decimals))
-    .mul(toBN(parseInt(tornadoServiceFee * 1e10)))
-    .div(toBN(1e10 * 100))
-
-  let desiredFee
-  switch (currency) {
-    case 'eth': {
-      desiredFee = expense.add(feePercent)
-      break
-    }
-    default: {
-      desiredFee = expense
-        .add(refund)
-        .mul(toBN(10 ** decimals))
-        .div(toBN(ethPrice))
-      desiredFee = desiredFee.add(feePercent)
-      break
-    }
-  }
   console.log(
-    'sent fee, desired fee, feePercent',
-    fromWei(fee.toString()),
-    fromWei(desiredFee.toString()),
-    fromWei(feePercent.toString()),
+    'user-provided fee, desired fee',
+    fromWei(userProvidedFee.toString()),
+    fromWei(toBN(totalWithdrawalFee).toString()),
   )
-  if (fee.lt(desiredFee)) {
+  if (userProvidedFee.lt(toBN(totalWithdrawalFee))) {
     throw new RelayerError(
       'Provided fee is not enough. Probably it is a Gas Price spike, try to resubmit.',
       0,
@@ -228,9 +219,12 @@ async function getTxObject({ data }) {
       to: contract._address,
       data: calldata,
     }
-    const { gasLimit, gasPrice } = await feeOracle.getGasParams(incompleteTx, 'relayer_withdrawal')
+    const { gasLimit, gasPrice } = await feeOracle.getGasParams({
+      tx: incompleteTx,
+      txType: 'relayer_withdrawal',
+    })
 
-    return Object.assign(incompleteTx, { gasLimit, gasPrice })
+    return { ...incompleteTx, gasLimit, gasPrice }
   } else {
     const method = data.type === jobType.MINING_REWARD ? 'reward' : 'withdraw'
     const calldata = minerContract.methods[method](data.proof, data.args).encodeABI()

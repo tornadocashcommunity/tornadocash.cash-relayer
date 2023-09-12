@@ -20,7 +20,7 @@
   "license": "MIT",
   "dependencies": {
     "@tornado/tornado-config": "^2.0.0",
-    "@tornado/tornado-oracles": "^2.1.0",
+    "@tornado/tornado-oracles": "^3.3.0",
     "ajv": "^6.12.5",
     "async-mutex": "^0.2.4",
     "bull": "^3.12.1",
