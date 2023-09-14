@@ -3,7 +3,7 @@ const { poseidon } = require('@tornado/circomlib')
 const { toBN, toChecksumAddress, BN, fromWei, isAddress, toWei } = require('web3-utils')
 
 const addressMap = new Map()
-const instance = instances[`netId${netId}`]
+const instance = instances[netId]
 
 for (const [currency, { instanceAddress, symbol, decimals }] of Object.entries(instance)) {
   Object.entries(instanceAddress).forEach(([amount, address]) =>

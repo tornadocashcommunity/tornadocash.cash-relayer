@@ -1,7 +1,7 @@
 require('dotenv').config()
 
 const { jobType } = require('./constants')
-const tornConfig = require('torn-token')
+const tornConfig = require('@tornado/tornado-config')
 module.exports = {
   netId: Number(process.env.NET_ID) || 1,
   redisUrl: process.env.REDIS_URL || 'redis://127.0.0.1:6379',

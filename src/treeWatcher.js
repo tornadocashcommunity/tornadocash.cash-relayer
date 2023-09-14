@@ -1,4 +1,4 @@
-const MerkleTree = require('fixed-merkle-tree')
+const MerkleTree = require('@tornado/fixed-merkle-tree')
 const { minerMerkleTreeHeight, torn, netId } = require('./config')
 const { poseidonHash2, toBN, logRelayerError } = require('./utils')
 const resolver = require('./modules/resolver')
