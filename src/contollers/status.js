@@ -12,7 +12,7 @@ async function status(req, res) {
 
   res.json({
     rewardAccount,
-    instances: instances[`netId${netId}`],
+    instances: instances[netId],
     netId,
     ethPrices,
     tornadoServiceFee,

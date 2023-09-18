@@ -1,5 +1,5 @@
 const { instances, netId } = require('./config')
-const { poseidon } = require('circomlib')
+const { poseidon } = require('@tornado/circomlib')
 const { toBN, toChecksumAddress, BN, fromWei, isAddress, toWei, toHex } = require('web3-utils')
 
 const addressMap = new Map()

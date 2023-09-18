@@ -1,6 +1,6 @@
 const fs = require('fs')
-const MerkleTree = require('fixed-merkle-tree')
-const { Utils, Controller } = require('tornado-anonymity-mining')
+const MerkleTree = require('@tornado/fixed-merkle-tree')
+const { Utils, Controller } = require('@tornado/anonymity-mining')
 const { TornadoFeeOracleV5 } = require('@tornado/tornado-oracles')
 const swapABI = require('../abis/swap.abi.json')
 const miningABI = require('../abis/mining.abi.json')
@@ -12,8 +12,6 @@ const {
   getInstance,
   sleep,
   toBN,
-  toWei,
-  toHex,
   fromWei,
   toChecksumAddress,
   RelayerError,
@@ -33,7 +31,7 @@ const {
   tornadoGoerliProxy,
 } = require('./config')
 const resolver = require('./modules/resolver')
-const { TxManager } = require('tx-manager')
+const { TxManager } = require('@tornado/tx-manager')
 const { redis, redisSubscribe } = require('./modules/redis')
 const getWeb3 = require('./modules/web3')
 
