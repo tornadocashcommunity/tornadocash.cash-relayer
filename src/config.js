@@ -1,11 +1,11 @@
 require('dotenv').config()
 
-const tornConfig = require('torn-token')
+const tornConfig = require('@tornado/tornado-config')
 
 const { jobType, networkConfig } = require('./constants')
 
 const netId = Number(process.env.NET_ID) || 56
-const instances = tornConfig.instances[`netId${netId}`]
+const instances = tornConfig.instances[netId]
 const proxyLight = tornConfig.tornadoProxyLight.address
 const { gasPrices, nativeCurrency } = networkConfig[`netId${netId}`]
 
