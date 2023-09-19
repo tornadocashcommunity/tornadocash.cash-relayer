@@ -17,15 +17,15 @@
   "author": "tornado.cash",
   "license": "MIT",
   "dependencies": {
+    "@tornado/tornado-config": "^1.0.8",
     "@tornado/tornado-oracles": "^3.3.0",
+    "@tornado/tx-manager": "^0.4.9",
     "ajv": "^6.12.5",
     "bull": "^3.12.1",
     "concurrently": "^8.2.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "ioredis": "^4.14.1",
-    "torn-token": "^1.0.5",
-    "tx-manager": "^0.4.8",
     "uuid": "^8.3.0",
     "web3": "^1.3.0",
     "web3-utils": "^1.2.2"

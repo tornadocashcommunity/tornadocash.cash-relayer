@@ -6,7 +6,7 @@ const { queue } = require('./queue')
 const { getInstance, logRelayerError, clearRelayerErrors } = require('./utils')
 const { jobType, status } = require('./constants')
 const { netId, gasPrices, privateKey, proxyLight, httpRpcUrl, tornadoServiceFee } = require('./config')
-const { TxManager } = require('tx-manager')
+const { TxManager } = require('@tornado/tx-manager')
 const { TornadoFeeOracleV5 } = require('@tornado/tornado-oracles')
 
 let web3
