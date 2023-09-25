@@ -6,8 +6,8 @@ export default registerAs('txManager', () => ({
   rpcUrl: process.env.RPC_URL || RPC_LIST[process.env.CHAIN_ID],
   config: {
     THROW_ON_REVERT: false,
-    CONFIRMATIONS: process.env.CONFIRMATIONS,
-    MAX_GAS_PRICE: process.env.MAX_GAS_PRICE,
+    CONFIRMATIONS: Number(process.env.CONFIRMATIONS),
+    MAX_GAS_PRICE: Number(process.env.MAX_GAS_PRICE),
   },
   gasPriceOracleConfig: {
     chainId: Number(process.env.CHAIN_ID),

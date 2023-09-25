@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { BigNumber } from 'ethers';
-import { GasPriceOracle } from 'gas-price-oracle';
+import { GasPriceOracle } from '@tornado/gas-price-oracle';
+import type { GasPrice } from '@tornado/gas-price-oracle/lib/services';
 
 import { toWei } from '@/utilities';
 import { SERVICE_ERRORS } from '@/constants';
@@ -34,7 +35,7 @@ export class GasPriceService {
         defaultRpc: this.rpcUrl,
       });
 
-      const result = await instance.gasPrices();
+      const result = (await instance.gasPrices({ isLegacy: true })) as GasPrice;
 
       return {
         instant: bump(gweiToWei(result.instant), percentBump.INSTANT),

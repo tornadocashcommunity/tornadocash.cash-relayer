@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers';
-import { TxManager } from 'tx-manager';
+import { TxManager } from '@tornado/tx-manager';
 import { Job, Queue, DoneCallback } from 'bull';
 
 import { Injectable } from '@nestjs/common';
