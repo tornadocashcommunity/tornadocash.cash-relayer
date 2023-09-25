@@ -1,15 +1,36 @@
 # Relayer for Tornado Cash Nova [![Build Status](https://github.com/tornadocash/tornado-pool-relayer/workflows/build/badge.svg)](https://github.com/tornadocash/tornado-pool-relayer/actions) [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/tornadocash/nova-relayer?logo=docker&logoColor=%23FFFFFF&sort=semver)](https://hub.docker.com/repository/docker/tornadocash/nova-relayer)
 
-## Deploy with docker-compose
+## Deploy with docker-compose (recommended)
 
-docker-compose.yml contains a stack that will automatically provision SSL certificates for your domain name and will add a https redirect to port 80.
+_The following instructions are for Ubuntu 22.10, other operating systems may vary. These instructions include automated SSL configuration with LetsEncrypt._
 
-1. Download [docker-compose.yml](/docker-compose.yml) and [.env.example](/.env.example)
+**PREREQUISITES**
 
-```
-wget https://raw.githubusercontent.com/tornadocash/tornado-pool-relayer/master/docker-compose.yml
-wget https://raw.githubusercontent.com/tornadocash/tornado-pool-relayer/master/.env.example -O .env
-```
+1. Update core dependencies
+
+- `sudo apt-get update`
+
+2. Install docker-compose
+
+- `curl -SL https://github.com/docker/compose/releases/download/v2.16.0/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose`
+
+3. Install Docker
+
+- `curl -fsSL https://get.docker.com -o get-docker.sh && chmod +x get-docker.sh && ./get-docker.sh`
+
+4. Install git
+
+- `sudo apt-get install git`
+
+5. Install node
+
+- `sudo apt install nodejs npm`
+
+**DEPLOYMENT**
+
+1. Clone this repository
+
+   `git clone https://git.tornado.ws/tornadocash/nova-relayer && cd nova-relayer`
 
 2. Setup environment variables
 
@@ -24,7 +45,9 @@ wget https://raw.githubusercontent.com/tornadocash/tornado-pool-relayer/master/.
    - set `CONFIRMATIONS` if needed - how many block confirmations to wait before processing an event. Not recommended to set less than 3
    - set `MAX_GAS_PRICE` if needed - maximum value of gwei value for relayer's transaction
 
-3. Run `docker-compose up -d`
+3. Build and deploy the docker container:
+   - `npm run build:docker`
+   - `docker-compose up -d`
 
 ## Run locally
 
