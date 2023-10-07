@@ -5,14 +5,14 @@ if [ "$EUID" -ne 0 ];
   exit 1;
 fi;
 
-relayer_soft_git_repo="https://git.tornado.ws/tornadocash/classic-relayer";
+relayer_soft_git_repo="https://git.tornado.ws/tornadocash/tornado-relayer";
 
 user_home_dir=$(eval echo ~$USER);
 relayer_folder="$user_home_dir/tornado-relayer";
 relayer_mainnet_soft_source_folder="$relayer_folder/mainnet-soft-source";
 relayer_sidechains_soft_source_folder="$relayer_folder/sidechains-soft-source";
 nova_relayer_soft_source_folder="$relayer_folder/nova-soft-source";
-script_log_file="/tmp/tornado-classic-relayer-installation.log"
+script_log_file="/tmp/tornado-relayer-installation.log"
 if [ -f $script_log_file ]; then rm $script_log_file; fi;
 
 function echo_log_err(){
