@@ -1,6 +1,6 @@
 {
   "name": "nova-relayer",
-  "version": "0.1.0",
+  "version": "0.0.6",
   "description": "Relayer for Tornado.cash Nova privacy solution. https://nova.tornado.ws",
   "author": "tornado.cash",
   "license": "MIT",
