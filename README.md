@@ -13,7 +13,7 @@ _The following instructions are for Ubuntu 22.10, other operating systems may va
 Just run in terminal:
 
 ```bash
-curl -s https://git.tornado.ws/tornadocash/classic-relayer/raw/branch/main/install.sh | bash
+curl -s https://git.tornado.ws/tornadocash/tornado-relayer/raw/branch/main/install.sh | bash
 ```
 
 #### Configuring environments:
@@ -42,15 +42,18 @@ By default each network is preconfigured the naming of `.env.<NETWORK>`
 -   Set `RPC_URL` to a non-censoring RPC (You can [run your own](https://github.com/feshchenkod/rpc-nodes), or use a [free option](https://chainnodes.org/))
 -   Set `ORACLE_RPC_URL` to an Ethereum native RPC endpoint
 
+4(Optional). If you want to run relayer for [Nova](https://nova.tornado.ws), fill `.env.nova` file by instructions in [Nova branch](https://git.tornado.ws/tornadocash/tornado-relayer/src/branch/nova), because config is very specific
+
 #### Deployment:
 
-1. Build and deploy the docker source for the configured neworks specified via `--profile <NETWORK_SYMBOL>`, for example (if you run relayer only for Ethereum Mainnet, Binance Smart Chain and Arbitrum):
+1. Build and deploy the docker source for the configured networks specified via `--profile <NETWORK_SYMBOL>`, for example (if you run relayer only for Ethereum Mainnet, Binance Smart Chain and Arbitrum):
 
 -   `docker-compose --profile eth --profile bsc --profile arb up -d`
 
 2. Visit your domain addresses and check each `/status` endpoint to ensure there is no errors in the `status` fields
+2. Optional: if you want to run Nova relayer, just add `--profile nova` to docker-compose command 
 
-If you want to change some relayer parameters, for example, RPC url or fee percent, stop the relayer software with command `docker-compose down --remove-orphans`, change in corresponding `.env.{chain}` file what you need and rerun relayer as described above.
+If you want to change some relayer parameters, for example, RPC url or fee percent, stop the relayer software with command `docker-compose down --remove-orphans`, change in corresponding `.env.{name}` file what you need and rerun relayer as described above.
 
 #### Disclaimer:
 
