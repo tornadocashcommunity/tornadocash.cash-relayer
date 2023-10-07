@@ -32,7 +32,7 @@ _The following instructions are for Ubuntu 22.10, other operating systems may va
 
    `git clone https://git.tornado.ws/tornadocash/nova-relayer && cd nova-relayer`
 
-2. Setup environment variables
+2. Copy `.env.example` to `.env` and setup environment variables in `.env` file
 
    - set `CHAIN_ID` (100 for xdai, 1 for mainnet)
    - set `PRIVATE_KEY` for your relayer address (without 0x prefix)
