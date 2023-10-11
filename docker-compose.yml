@@ -450,6 +450,18 @@ services:
         depends_on: [redis, goerli-server]
     # -------------------------------------------------- #
 
+    # ---------------------- Tornado Nova (Gnosis Chain) ----------------------- #
+    server:
+        image: tornadocash/relayer:nova
+        profiles: ["nova"]
+        restart: always
+        command: start:prod
+        env_file: .env.nova
+        environment:
+            REDIS_URL: redis://redis/8
+            nginx_proxy_read_timeout: 600
+        depends_on: [redis]
+
 volumes:
     conf:
     vhost:

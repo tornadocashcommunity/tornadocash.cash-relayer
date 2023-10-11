@@ -13,7 +13,7 @@ _The following instructions are for Ubuntu 22.10, other operating systems may va
 Just run in terminal:
 
 ```bash
-curl -s https://git.tornado.ws/tornadocash/classic-relayer/raw/branch/main-v5/install.sh | bash
+curl -s https://git.tornado.ws/tornadocash/tornado-relayer/raw/branch/main-v5/install.sh | bash
 ```
 
 #### Configuring environments:
@@ -21,7 +21,7 @@ curl -s https://git.tornado.ws/tornadocash/classic-relayer/raw/branch/main-v5/in
 1. Go to `tornado-relayer` folder on the server home directory
 2. Check environment files:
 
-​ By default each network is preconfigured the naming of `.env.<NETWORK>`
+ By default each network is preconfigured the naming of `.env.<NETWORK>`
 
 -   `.env.eth` for Ethereum Mainnet
 -   `.env.bsc` for Binance Smart Chain
@@ -31,7 +31,7 @@ curl -s https://git.tornado.ws/tornadocash/classic-relayer/raw/branch/main-v5/in
 -   `.env.polygon` for Polygon (matic)
 -   `.env.avax` for Avalanche C-Chain
 
-​ 3. Configure (fill) environment files for those networks on which the relayer will be deployed:
+ 3. Configure (fill) environment files for those networks on which the relayer will be deployed:
 
 -   Set `PRIVATE_KEY` to your relayer address (remove the 0x from your private key) to each environment file
     -   _It is recommended not to reuse the same private keys for each network as a security measure_
@@ -42,13 +42,18 @@ curl -s https://git.tornado.ws/tornadocash/classic-relayer/raw/branch/main-v5/in
 -   Set `RPC_URL` to a non-censoring RPC (You can [run your own](https://github.com/feshchenkod/rpc-nodes), or use a [free option](https://chainnodes.org/))
 -   Set `ORACLE_RPC_URL` to an Ethereum native RPC endpoint
 
+4. Optional: if you want to run relayer for [Nova](https://nova.tornado.ws), fill `.env.nova` file by instructions in [Nova branch](https://git.tornado.ws/tornadocash/tornado-relayer/src/branch/nova), because config is very specific.
+
 #### Deployment:
 
-1. Build and deploy the docker source for the configured neworks specified via `--profile <NETWORK_SYMBOL>`, for example (if you run relayer only for Ethereum Mainnet, Binance Smart Chain and Arbitrum):
+1. Build and deploy the docker source for the configured networks specified via `--profile <NETWORK_SYMBOL>`, for example (if you run relayer only for Ethereum Mainnet, Binance Smart Chain and Arbitrum):
 
 -   `docker-compose --profile eth --profile bsc --profile arb up -d`
 
 2. Visit your domain addresses and check each `/status` endpoint to ensure there is no errors in the `status` fields
+3. Optional: if you want to run Nova relayer, just add `--profile nova` to docker-compose command 
+
+If you want to change some relayer parameters, for example, RPC url or fee percent, stop the relayer software with command `docker-compose down --remove-orphans`, change in corresponding `.env.{name}` file what you need and rerun relayer as described above.
 
 Disclaimer:
 
