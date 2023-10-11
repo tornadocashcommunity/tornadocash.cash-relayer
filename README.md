@@ -13,7 +13,7 @@ __*It is recommended to run your Relayer on a VPS instnace ([Virtual Private Ser
 Just run in terminal:
 
 ```bash
-curl -s https://git.tornado.ws/tornadocash/classic-relayer/raw/branch/main-v4/install.sh | bash
+curl -s https://git.tornado.ws/tornadocash/tornado-relayer/raw/branch/main-v4/install.sh | bash
 ```
 
 #### Configuring environments:
@@ -43,15 +43,18 @@ curl -s https://git.tornado.ws/tornadocash/classic-relayer/raw/branch/main-v4/in
   - Set `RPC_URL` to a non-censoring RPC (You can [run your own](https://github.com/feshchenkod/rpc-nodes), or use a [free option](https://chainnodes.org/))
   - Set `ORACLE_RPC_URL` to an Ethereum native RPC endpoint
 
+4. Optional: if you want to run relayer for [Nova](https://nova.tornado.ws), fill `.env.nova` file by instructions in [Nova branch](https://git.tornado.ws/tornadocash/tornado-relayer/src/branch/nova), because config is very specific
+
 
 
 #### Deployment:
 
-1. Build and deploy the docker source for the configured neworks specified via `--profile <NETWORK_SYMBOL>`, for example (if you run relayer only for Ethereum Mainnet, Binance Smart Chain and Arbitrum):
+1. Build and deploy the docker source for the configured networks specified via `--profile <NETWORK_SYMBOL>`, for example (if you run relayer only for Ethereum Mainnet, Binance Smart Chain and Arbitrum):
 
   - `docker-compose --profile eth --profile bsc --profile arb up -d`
 
 2. Visit your domain addresses and check each `/status` endpoint to ensure there is no errors in the `status` fields
+2. Optional: if you want to run Nova relayer, just add `--profile nova` to docker-compose command 
 
 
 

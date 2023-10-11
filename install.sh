@@ -5,13 +5,14 @@ if [ "$EUID" -ne 0 ];
   exit 1;
 fi;
 
-relayer_soft_git_repo="https://git.tornado.ws/tornadocash/classic-relayer";
+relayer_soft_git_repo="https://git.tornado.ws/tornadocash/tornado-relayer";
 
 user_home_dir=$(eval echo ~$USER);
 relayer_folder="$user_home_dir/tornado-relayer";
 relayer_mainnet_soft_source_folder="$relayer_folder/mainnet-soft-source";
 relayer_sidechains_soft_source_folder="$relayer_folder/sidechains-soft-source";
-script_log_file="/tmp/tornado-classic-relayer-installation.log"
+nova_relayer_soft_source_folder="$relayer_folder/nova-soft-source";
+script_log_file="/tmp/tornado-relayer-installation.log"
 if [ -f $script_log_file ]; then rm $script_log_file; fi;
 
 function echo_log_err(){
@@ -59,6 +60,7 @@ function install_repositories(){
     git clone $relayer_soft_git_repo -b main-v4 $relayer_folder
     git clone $relayer_soft_git_repo -b mainnet-v4 $relayer_mainnet_soft_source_folder;
     git clone $relayer_soft_git_repo -b sidechain-v4 $relayer_sidechains_soft_source_folder;
+    git clone $relayer_soft_git_repo -b nova $nova_relayer_soft_source_folder;
 }
 
 function install_docker_utilities(){
@@ -93,10 +95,12 @@ function configure_nginx_reverse_proxy(){
 function build_relayer_docker_containers(){
     cd $relayer_mainnet_soft_source_folder && npm run build;
     cd $relayer_sidechains_soft_source_folder && npm run build;
+    cd $nova_relayer_soft_source_folder && npm run build:docker;
 }
 
 function prepare_environments(){
     cp $relayer_mainnet_soft_source_folder/.env.example $relayer_folder/.env.eth;
+    cp $nova_relayer_soft_source_folder/.env.example $relayer_folder/.env.nova;
     tee $relayer_folder/.env.bsc $relayer_folder/.env.arb $relayer_folder/.env.goerli $relayer_folder/.env.polygon $relayer_folder/.env.op \
         $relayer_folder/.env.avax $relayer_folder/.env.gnosis < $relayer_sidechains_soft_source_folder/.env.example > /dev/null;
 }
