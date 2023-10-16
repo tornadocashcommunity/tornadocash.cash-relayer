@@ -14,6 +14,7 @@ const {
   toBN,
   fromWei,
   toChecksumAddress,
+  isAddress,
   RelayerError,
   logRelayerError,
 } = require('./utils')
@@ -200,6 +201,18 @@ function checkOldProxy(address) {
   return toChecksumAddress(address) === toChecksumAddress(OLD_PROXY)
 }
 
+async function checkRecipient({ data }) {
+  // Checks only for default withdrawals
+  if (data.type !== jobType.TORNADO_WITHDRAW) return
+
+  console.log(data.args)
+  const recipient = data.args[2]
+  if (!isAddress(recipient)) throw new Error('Recipient address is invalid')
+
+  const addressCode = await web3.eth.getCode(toChecksumAddress(recipient))
+  if (addressCode !== '0x') throw new Error('Recipient cannot be a smart-contract, only EOA')
+}
+
 async function getTxObject({ data }) {
   if (data.type === jobType.TORNADO_WITHDRAW) {
     let { contract, isOldProxy } = await getProxyContract()
@@ -265,6 +278,7 @@ async function processJob(job) {
 }
 
 async function submitTx(job, retry = 0) {
+  await checkRecipient(job)
   const rawTx = await getTxObject(job)
   await checkFee(job, rawTx)
   currentTx = await txManager.createTx(rawTx)
