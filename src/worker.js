@@ -1,5 +1,5 @@
 const Web3 = require('web3')
-const { toBN, fromWei } = require('web3-utils')
+const { toBN, fromWei, isAddress, toChecksumAddress } = require('web3-utils')
 const { redis } = require('./modules/redis')
 const proxyLightABI = require('../abis/proxyLightABI.json')
 const { queue } = require('./queue')
@@ -87,6 +87,14 @@ async function getTxObject({ data }) {
   return { ...incompleteTx, gasLimit, gasPrice }
 }
 
+async function checkRecipient({ data }) {
+  const recipient = data.args[2]
+  if (!isAddress(recipient)) throw new Error('Recipient address is invalid')
+
+  const addressCode = await web3.eth.getCode(toChecksumAddress(recipient))
+  if (addressCode !== '0x') throw new Error('Recipient cannot be a smart-contract, only EOA')
+}
+
 async function processJob(job) {
   try {
     if (!jobType[job.data.type]) {
@@ -104,6 +112,7 @@ async function processJob(job) {
 }
 
 async function submitTx(job) {
+  await checkRecipient(job)
   const tx = await getTxObject(job)
   await checkTornadoFee(job, tx)
   currentTx = await txManager.createTx(tx)

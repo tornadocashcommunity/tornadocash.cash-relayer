@@ -2,7 +2,7 @@ require('dotenv').config()
 
 const tornConfig = require('@tornado/tornado-config')
 
-const { jobType, networkConfig } = require('./constants')
+const { networkConfig } = require('./constants')
 
 const netId = Number(process.env.NET_ID) || 56
 const instances = tornConfig.instances[netId]
