@@ -195,7 +195,6 @@ async function checkRecipient({ data }) {
   // Checks only for default withdrawals
   if (data.type !== jobType.TORNADO_WITHDRAW) return
 
-  console.log(data.args)
   const recipient = data.args[2]
   if (!isAddress(recipient)) throw new Error('Recipient address is invalid')
 
@@ -267,7 +266,7 @@ async function processJob(job) {
 }
 
 async function submitTx(job, retry = 0) {
-  await checkRecipient(job);
+  await checkRecipient(job)
   await checkFee(job)
   currentTx = await txManager.createTx(await getTxObject(job))
 
