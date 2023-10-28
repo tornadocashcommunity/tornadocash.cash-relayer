@@ -30,6 +30,7 @@ const {
   miningServiceFee,
   tornadoServiceFee,
   tornadoGoerliProxy,
+  rewardAccount,
 } = require('./config')
 const resolver = require('./modules/resolver')
 const { TxManager } = require('@tornado/tx-manager')
@@ -265,10 +266,20 @@ async function processJob(job) {
   }
 }
 
+async function checkRevert(tx) {
+  try {
+    await web3.eth.estimateGas(Object.assign({ from: rewardAccount }, tx))
+  } catch (e) {
+    throw new Error('Estimation error: transaction will possibly be reverted')
+  }
+}
+
 async function submitTx(job, retry = 0) {
   await checkRecipient(job)
   await checkFee(job)
-  currentTx = await txManager.createTx(await getTxObject(job))
+  const tx = await getTxObject(job)
+  await checkRevert(tx)
+  currentTx = await txManager.createTx(tx)
 
   if (job.data.type !== jobType.TORNADO_WITHDRAW) {
     await fetchTree()
